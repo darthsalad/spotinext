@@ -1,36 +1,80 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Nextify - Spotify Music Downloader 
 
-## Getting Started
+An easy to use Spotify music downloader web app and PWA built with `Next.js` and `Flask` along with `youtube-dl`.
 
-First, run the development server:
+## To-Do
+
+- [ ] Spotify OAuth setup for user authentication
+- [ ] Getting song details from current playing song of the user
+- [ ] Downloading the Official Audio video from YouTube
+- [ ] Converting the video to mp3
+- [ ] Sending the mp3 via Flask
+- [ ] Download the mp3 from the response 
+- [ ] Deleting the temporary files(mp3) from the server
+
+## Installation
+
+- Clone the repo and `cd` into it 
+- `cd` into the server directory and run the following commands:
+ 
+```bash
+# for bash
+python -m venv ./venv
+source ./venv/bin/activate
+
+#for windows
+python -m venv ./venv
+.\venv\Scripts\Activate.ps1
+```
+- Check if the virtual environment got activated by running `which python` or `where python` for windows or ``pip -V`` for both which'll show the current active Python environment
+- Install the dependencies by running:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
+pip install -r requirements.txt
+```
+- `cd` into the client directory and run the following commands for installing the client dependencies:
+
+```bash
+yarn install
+
+# or if you use npm
+npm install
+```
+- Ensure that you have `ffmpeg` installed on your system and added to the `PATH` environment variable, if not then run the following commands:
+
+```bash
+# for linux
+sudo apt install ffmpeg
+
+# for windows
+winget install Gyan.FFmpeg
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Running the app
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Server
+- `cd` into the server directory and run the following command:
 
-[http://localhost:3000/api/hello](http://localhost:3000/api/hello) is an endpoint that uses [Route Handlers](https://beta.nextjs.org/docs/routing/route-handlers). This endpoint can be edited in `app/api/hello/route.ts`.
+```bash
+python main.py
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+### Client
+- `cd` into the root directory of the repo and run the following command:
 
-## Learn More
+```bash
+# Development
+yarn dev 
 
-To learn more about Next.js, take a look at the following resources:
+# or if you use npm
+npm run dev
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# Production
+yarn build
+yarn start
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+# or if you use npm
+npm run build
+npm start
+```
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.

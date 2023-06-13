@@ -3,7 +3,11 @@
 # dependencies
 /node_modules
 /.pnp
+/.vscode
 .pnp.js
+
+/server/venv
+Dockerfile
 
 # testing
 /coverage
@@ -26,6 +30,7 @@ yarn-error.log*
 
 # local env files
 .env*.local
+.env*
 
 # vercel
 .vercel
