@@ -1,17 +1,19 @@
 import os
 import requests
-import youtube_dl
+import yt_dlp as youtube_dl
 from dotenv import load_dotenv
-from flask import Flask, request, response
+from flask_cors import CORS
+from flask import Flask, send_file, Response, jsonify
 
 load_dotenv()
 key = os.environ.get("YT_DATA_API")
 
 app = Flask(__name__)
+CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 app.config['CORS_ORIGINS'] = ['http://localhost:3000']
 app.config['CORS_METHODS'] = ['GET', 'POST']
-app.config['Access-Control-Allow-Origin'] = '*'
+app.config['Access-Control-Allow-Origin'] = 'http://localhost:3000'
 app.config['Access-Control-Allow-Headers'] = '*'
 app.config['Access-Control-Allow-Credentials'] = '*'
 
@@ -31,7 +33,6 @@ def get_song_details(song_id):
   )
 
   json_data=response.json()
-  print(f"Video ID: {json_data['items'][0]['id']['videoId']}")
   video_id=json_data['items'][0]['id']['videoId']
 
   class MyLogger(object):
@@ -63,6 +64,17 @@ def get_song_details(song_id):
 
   with youtube_dl.YoutubeDL(ydl_opts) as ydl:
       ydl.download([f"https://www.youtube.com/watch?v={video_id}"])
-  
-  
-  
+      
+  for file in os.listdir():
+   if file.endswith(".mp3"):
+       return send_file(file, as_attachment=True)
+   
+@app.route("/cleanup", methods=['GET'])
+def cleanup():
+    for file in os.listdir():
+     if file.endswith(".mp3"):
+        os.remove(file)
+    
+    return jsonify({"message": "Cleanup successful"}), 200 
+
+app.run(debug=True)

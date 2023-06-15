@@ -4,12 +4,13 @@ An easy to use Spotify music downloader web app and PWA built with `Next.js` and
 
 ## To-Do
 
+- [ ] UI Improvements
 - [ ] Spotify OAuth setup for user authentication
 - [ ] Getting song details from current playing song of the user
 - [x] Downloading the Official Audio video from YouTube
 - [x] Converting the video to mp3
-- [ ] Sending the mp3 via Flask
-- [ ] Download the mp3 from the response 
+- [x] Sending the mp3 via Flask
+- [x] Download the mp3 from the response 
 - [x] Deleting the temporary files(mp3) from the server
 
 ## Installation
