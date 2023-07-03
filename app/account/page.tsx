@@ -10,19 +10,21 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { Avatar } from "@radix-ui/react-avatar";
-import { AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { AvatarImage } from "@/components/ui/avatar";
 import { ProfileData } from "@/types/spotify-profile";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
+import { ExternalLink, LogOut, User } from "lucide-react";
+import Link from "next/link";
 
 const Account = () => {
 	const router = useRouter();
 
-	const countryName = (countryCode: string) : string | undefined => {
-		let regionNames = new Intl.DisplayNames(['en'], { type: 'region' });
+	const countryName = (countryCode: string): string | undefined => {
+		let regionNames = new Intl.DisplayNames(["en"], { type: "region" });
 		return regionNames.of(countryCode);
-	}
+	};
 
 	const {
 		data: profileData,
@@ -43,7 +45,7 @@ const Account = () => {
 				return null;
 			}
 			const data = await res.json();
-			console.log("data", data);
+			// console.log("data", data);
 			return data;
 		},
 		refetchOnWindowFocus: true,
@@ -63,8 +65,10 @@ const Account = () => {
 								<>
 									<Skeleton className="w-32 h-32 rounded-full" />
 									<Skeleton className="h-3 w-full mt-2" />
-									<Skeleton className="h-5 w-full mt-2" />
+									<Skeleton className="h-6 w-full mt-2" />
 									<Skeleton className="h-3 w-full mt-2" />
+									<Skeleton className="h-3 w-full mt-2" />
+									<Skeleton className="h-8 w-7/12 mt-3" />
 								</>
 							) : (
 								<>
@@ -86,10 +90,35 @@ const Account = () => {
 									</h2>
 									<p className="text-sm text-muted-foreground mt-1">
 										{profileData?.email}
-										</p>
-										<p className="text-sm text-muted-foreground mt-1">
-											{countryName(profileData?.country || "")}
-										</p>
+									</p>
+									<p className="text-sm text-muted-foreground mt-1">
+										Country: {countryName(profileData?.country || "")}
+									</p>
+									<div className="flex items-center border-2 rounded-lg p-3 mt-5">
+										<User size={20} className="mr-2 text-green-600" />
+										{profileData?.followers.total}
+										<span className="ml-2">Followers</span>
+									</div>
+									<div className="mt-5 items-center justify-center">
+										<Link
+											href={profileData?.spotify_profile!}
+											target="_blank"
+											rel="noopener noreferrer"
+										>
+											<Button className="w-full bg-green-600 rounded-full text-semibold text-black items-center">
+												<ExternalLink size={18} className="mr-2" />
+												Spotify Profile
+											</Button>
+										</Link>
+										<Button
+											variant={"secondary"}
+											className="w-full rounded-full mt-2 items-center"
+											onClick={() => console.log("logout")}
+										>
+											<LogOut size={18} className="mr-2" />
+											Logout
+										</Button>
+									</div>
 								</>
 							)}
 						</div>

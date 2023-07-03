@@ -57,7 +57,7 @@ export async function middleware(req: NextRequest) {
 		}
 	}
 
-	if (req.nextUrl.pathname === "/account") {
+  if (req.nextUrl.pathname === "/account") {
 		const code = req.nextUrl.searchParams.get("code");
 		if (code) {
       if (req.cookies.get("access_token") && req.cookies.get("refresh_token")) {
