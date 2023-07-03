@@ -1,5 +1,14 @@
-"use client";
+"use client"
+
+import { useRouter } from "next/navigation";
+
 export default function Home() {
+	const router = useRouter();
+
+	const redirect = () => {
+		router.push("login");
+	};
+
 	const cleanupFunc = () => {
 		fetch("http://localhost:5000/cleanup")
 			.then((response) => response.json())
@@ -26,11 +35,11 @@ export default function Home() {
 				link.setAttribute("download", "song.mp3");
 				document.body.appendChild(link);
 				link.click();
-        link.parentNode!.removeChild(link);
-      })
-      .then(() => {
-        cleanupFunc();
-      })
+				link.parentNode!.removeChild(link);
+			})
+			.then(() => {
+				cleanupFunc();
+			})
 			.catch((error) => {
 				console.error("Error:", error);
 			});
@@ -39,12 +48,18 @@ export default function Home() {
 	return (
 		<main>
 			<div className="flex justify-center items-center min-h-screen">
-        <button
-          className="bg-violet-500 hover:bg-violet-700 text-white font-bold py-2 px-4 rounded-md"
-          onClick={handleClick}
-        >
-          Download song
-        </button>
+				<button
+					className="bg-violet-500 hover:bg-violet-700 text-white font-bold py-2 px-4 rounded-md"
+					onClick={handleClick}
+				>
+					Download song
+				</button>
+				<button
+					className="bg-violet-500 hover:bg-violet-700 text-white font-bold py-2 px-4 rounded-md px-"
+					onClick={redirect}
+				>
+					Go To Subdomain
+				</button>
 			</div>
 		</main>
 	);
