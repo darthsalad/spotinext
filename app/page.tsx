@@ -10,6 +10,7 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/components/ui/use-toast";
 import { SpotifyPlaying } from "@/types/spotify-playing";
 import { useQuery } from "@tanstack/react-query";
@@ -159,9 +160,18 @@ export default function Home() {
 							<span className="text-green-600">Playing Spotify Track</span>
 						</CardDescription>
 						<CardContent className="p-0 py-5">
-							<div className="flex flex-row">
+							<div className="flex flex-row w-full">
 								{isLoading ? (
-									<div>Loading</div>
+									<>
+										<Skeleton className="w-28 h-28 rounded-lg" />
+										<div className="w-full ml-5">
+											<Skeleton className="w-28 h-4 rounded-lg" />
+											<Skeleton className="w-28 h-8 rounded-lg mt-2" />
+											<Skeleton className="w-28 h-4 rounded-lg mt-4" />
+											<Skeleton className="w-10/12 h-2 rounded-lg mt-2" />
+											<Skeleton className="w-10/12 h-10 rounded-lg mt-4" />
+										</div>
+									</>
 								) : !playingData?.is_playing ? (
 									<div className="text-2xl font-semibold">
 										Play something on Spotify to get started!
@@ -182,6 +192,7 @@ export default function Home() {
 												{playingData?.item.artists.map((artist, index) => {
 													return (
 														<a
+															key={index}
 															className=""
 															href={artist.uri}
 															target="_blank"

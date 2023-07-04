@@ -35,7 +35,7 @@ def get_song_details():
         url,
         params={
             "part": "snippet",
-            "q": f"{song_name} {artist} Official Audio",
+            "q": f"{song_name} {urllib.parse.unquote_plus(artist)} Official Audio",
             "key": key,
             "type": "video",
             "maxResults": 1,

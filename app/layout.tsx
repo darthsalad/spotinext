@@ -23,7 +23,7 @@ export default function RootLayout({
 				<QueryWrapper>
 					<ThemeProvider attribute="class" defaultTheme="system" enableSystem>
 						<Navbar />
-						<div className="pb-[200px]">
+						<div>
 							{children}
 						</div>
 						<Toaster />

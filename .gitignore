@@ -6,7 +6,9 @@
 /.vscode
 .pnp.js
 
+# container
 /server/venv
+Dockerfile
 
 # testing
 /coverage
