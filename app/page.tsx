@@ -20,6 +20,7 @@ import { useRouter } from "next/navigation";
 export default function Home() {
 	const router = useRouter();
 	const { toast } = useToast();
+	const server = process.env.NEXT_PUBLIC_SERVER_URL!;
 
 	const {
 		data: playingData,
@@ -90,7 +91,7 @@ export default function Home() {
 	});
 
 	const cleanupFunc = () => {
-		fetch("http://localhost:5000/cleanup")
+		fetch(`${server}/cleanup`)
 			.then((response) => response.json())
 			.then((data) => {
 				console.log(data);
@@ -102,7 +103,7 @@ export default function Home() {
 
 	const handleClick = async () => {
 		fetch(
-			"http://localhost:5000/song?" +
+			`${server}/song?` +
 				new URLSearchParams({
 					name: String(playingData?.item.name),
 					artist: String(

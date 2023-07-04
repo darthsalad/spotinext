@@ -1,7 +1,8 @@
-FROM ubuntu:20.04
+FROM ubuntu:18.04
 
-RUN apt-get update && apt-get install -y \
-    python3 \
+RUN apt update && apt install -y \
+    python \
+    python-pip \
     ffmpeg 
 
 WORKDIR /usr/src/app
