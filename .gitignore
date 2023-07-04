@@ -7,7 +7,6 @@
 .pnp.js
 
 /server/venv
-Dockerfile
 
 # testing
 /coverage
