@@ -78,4 +78,4 @@ def cleanup():
     
     return jsonify({"message": "Cleanup successful"}), 200 
 
-app.run(debug=True, port=5000)
+app.run(debug=True, port=8080)
