@@ -2,6 +2,8 @@ FROM python:3.8.5-slim-buster
 
 RUN apt-get update && apt-get install -y ffmpeg
 
+RUN pip install yt-dlp
+
 WORKDIR /app
 
 COPY . .
