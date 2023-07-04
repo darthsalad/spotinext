@@ -66,3 +66,35 @@ export async function getAccessToken(
 	const data = await response.json();
 	return data;
 }
+
+export async function refreshAccessToken(refreshToken: string): Promise<{
+	access_token: string;
+	token_type: string;
+	expires_in: number;
+	scope: string;
+}> {
+	const clientId = process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID!;
+
+	const res = await fetch("https://accounts.spotify.com/api/token", {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/x-www-form-urlencoded",
+		},
+		body: new URLSearchParams({
+			grant_type: "refresh_token",
+			refresh_token: refreshToken,
+			client_id: clientId,
+		}),
+	});
+	if (!res.ok) {
+		console.log(res.statusText);
+	}
+	const data = await res.json();
+	console.log("newTokens: ", data);
+	return {
+		access_token: data.access_token,
+		token_type: data.token_type,
+		expires_in: data.expires_in,
+		scope: data.scope,
+	};
+}

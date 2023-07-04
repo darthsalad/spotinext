@@ -1,6 +1,6 @@
 // check expiry of access token from httpOnly cookie and request new one if expired from refresh token
 import { NextRequest, NextResponse } from "next/server";
-import { getAccessToken } from "./lib/spotify";
+import { getAccessToken, refreshAccessToken } from "./lib/spotify";
 
 export async function middleware(req: NextRequest) {
 	if (req.nextUrl.pathname === "/") {
@@ -8,31 +8,18 @@ export async function middleware(req: NextRequest) {
 		const expiry = req.cookies.get("expiry");
 		const now = new Date();
 		if (expiry && refreshToken) {
-			const expiryDate = new Date(Number(expiry.value));
-			if (expiryDate < now) {
-				const apiRequest = await fetch("/api/refresh", {
-					method: "GET",
-					headers: {
-						"Content-Type": "application/json",
-					},
-					credentials: "include",
-				});
-				const newTokens = await apiRequest.json();
-				console.log(newTokens);
+			if (Number(expiry.value) > now.getTime()) {
+				return NextResponse.next();
+			} else {
+				const newTokens = await refreshAccessToken(refreshToken.value);
 				const response = NextResponse.next();
+
 				response.cookies.set("access_token", newTokens.access_token, {
 					httpOnly: true,
 					path: "/",
 					sameSite: "lax",
 					expires: new Date(now.getTime() + newTokens.expires_in * 1000),
 				});
-
-				// response.cookies.set("refresh_token", newTokens.refresh_token, {
-				// 	httpOnly: true,
-				// 	path: "/",
-				// 	sameSite: "lax",
-				// 	expires: new Date(now.getTime() + 365 * 24 * 60 * 60 * 1000),
-				// });
 
 				response.cookies.set(
 					"expiry",

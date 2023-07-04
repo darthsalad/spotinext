@@ -13,9 +13,11 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
+import { useToast } from "./ui/use-toast";
 
 const Navbar = () => {
 	const router = useRouter();
+	const { toast } = useToast();
 
 	const {
 		data: authStatus,
@@ -46,6 +48,28 @@ const Navbar = () => {
 		router.push("/auth/login");
 	};
 
+	const logout = async () => {
+		const res = await fetch("/api/auth", {
+			method: "DELETE",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			credentials: "include",
+		});
+		if (!res.ok) {
+			console.log("error", res.statusText);
+			toast({
+				title: "Something went wrong",
+				description: res.statusText,
+				variant: "destructive",
+			});
+		}
+		const data = await res.json();
+		toast({
+			title: data.message,
+		})
+	};
+
 	return (
 		<div className="my-5 mx-auto px-10 pb-5 flex border-b item-center justify-between">
 			<h2 className="text-3xl font-semibold">
@@ -74,6 +98,7 @@ const Navbar = () => {
 									</DropdownMenuItem>
 									<DropdownMenuItem
 										onClick={() => {
+											logout();
 											router.push("/");
 										}}
 									>
@@ -97,6 +122,7 @@ const Navbar = () => {
 							<Button
 								variant="secondary"
 								onClick={() => {
+									logout();
 									router.push("/");
 								}}
 							>
