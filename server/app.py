@@ -10,13 +10,14 @@ load_dotenv()
 key = os.environ.get("YT_DATA_API")
 
 app = Flask(__name__)
-CORS(
-    app,
-    origins=["*"],
-    supports_credentials=True,
-    allow_headers=["Content-Type", "Authorization"],
-    methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-)
+CORS(app)
+
+@app.after_request
+def after_request(response):
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With')
+    response.headers.add('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+    return response
 # app.config["Access-Control-Allow-Origin"] = "*"
 # app.config[
 #     "Access-Control-Allow-Headers"
