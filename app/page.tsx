@@ -10,15 +10,16 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { useToast } from "@/components/ui/use-toast";
 import { SpotifyPlaying } from "@/types/spotify-playing";
 import { useQuery } from "@tanstack/react-query";
 import { Disc3, Download } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 export default function Home() {
 	const router = useRouter();
+	const { toast } = useToast();
 
 	const {
 		data: playingData,
@@ -40,7 +41,7 @@ export default function Home() {
 			const data = await res.json();
 			console.log(data);
 
-			const artists = data.item.album.artists.map((artist: any) => {
+			const artists = data.item.artists.map((artist: any) => {
 				return {
 					external_urls: {
 						spotify: artist.external_urls.spotify,
@@ -88,10 +89,6 @@ export default function Home() {
 		refetchOnWindowFocus: true,
 	});
 
-	const redirect = () => {
-		router.push("login");
-	};
-
 	const cleanupFunc = () => {
 		fetch("http://localhost:5000/cleanup")
 			.then((response) => response.json())
@@ -104,24 +101,48 @@ export default function Home() {
 	};
 
 	const handleClick = async () => {
-		fetch("http://localhost:5000/song/123", {
-			method: "GET",
-			headers: {
-				"Content-Type": "application/json",
-			},
-		})
+		fetch(
+			"http://localhost:5000/song?" +
+				new URLSearchParams({
+					name: String(playingData?.item.name),
+					artist: String(
+						playingData?.item.artists
+							.map((artist) => {
+								return artist.name;
+							})
+							.join(", ")
+					),
+				}),
+			{
+				method: "GET",
+				headers: {
+					"Content-Type": "application/json",
+				},
+			}
+		)
 			.then((response) => response.blob())
 			.then((blob) => {
 				const url = window.URL.createObjectURL(new Blob([blob]));
 				const link = document.createElement("a");
 				link.href = url;
-				link.setAttribute("download", "song.mp3");
+				link.setAttribute(
+					"download",
+					`${playingData?.item.name} - ${playingData?.item.artists
+						.map((artist) => {
+							return artist.name;
+						})
+						.join(", ")}.mp3`
+				);
 				document.body.appendChild(link);
 				link.click();
 				link.parentNode!.removeChild(link);
 			})
 			.then(() => {
 				cleanupFunc();
+				toast({
+					title: "Song Downloaded!",
+					description: "Confirm the download in your browser to save the song.",
+				});
 			})
 			.catch((error) => {
 				console.error("Error:", error);
@@ -141,6 +162,10 @@ export default function Home() {
 							<div className="flex flex-row">
 								{isLoading ? (
 									<div>Loading</div>
+								) : !playingData?.is_playing ? (
+									<div className="text-2xl font-semibold">
+										Play something on Spotify to get started!
+									</div>
 								) : (
 									<>
 										<Avatar className="w-28 h-28 rounded-lg">
@@ -156,7 +181,7 @@ export default function Home() {
 											<h1 className="font-semibold text-md text-muted-foreground">
 												{playingData?.item.artists.map((artist, index) => {
 													return (
-														<Link
+														<a
 															className=""
 															href={artist.uri}
 															target="_blank"
@@ -166,25 +191,29 @@ export default function Home() {
 															{playingData?.item.artists.length - 1 !== index
 																? ", "
 																: ""}
-														</Link>
+														</a>
 													);
 												})}
 											</h1>
 											<h1 className="font-semibold text-2xl">
-												<Link href={playingData?.item.external_urls.spotify!}>
+												<a
+													href={playingData?.item.external_urls.spotify}
+													target="_blank"
+													rel="noopener noreferrer"
+												>
 													{playingData?.item.name}
-													{playingData?.item.explicit ? (
-															<Image
-																className="mt-2"
-																src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Parental_Advisory_label.svg/1200px-Parental_Advisory_label.svg.png"
-																width={40}
-																height={20}
-																alt="Explicit"
-															/>
-													) : (
-														""
-													)}
-												</Link>
+												</a>
+												{playingData?.item.explicit ? (
+													<Image
+														className="mt-2"
+														src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Parental_Advisory_label.svg/1200px-Parental_Advisory_label.svg.png"
+														width={40}
+														height={20}
+														alt="Explicit"
+													/>
+												) : (
+													""
+												)}
 											</h1>
 											<h1 className="font-semibold text-md text-muted-foreground mt-2">
 												{playingData?.item.album.name}
@@ -196,12 +225,13 @@ export default function Home() {
 														playingData?.item.duration_ms!) *
 													100
 												}
-												/>
-												<Button
-													className="w-full mt-5 rounded-full bg-green-600 flex items-center"
-												>
-													<Download size={18} className="mr-2" /> Download Audio
-												</Button>
+											/>
+											<Button
+												className="w-full mt-5 rounded-full bg-green-600 flex items-center"
+												onClick={handleClick}
+											>
+												<Download size={18} className="mr-2" /> Download Audio
+											</Button>
 										</div>
 									</>
 								)}

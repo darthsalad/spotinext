@@ -1,9 +1,10 @@
 import os
 import requests
+import urllib.parse
 import yt_dlp as youtube_dl
-from dotenv import load_dotenv
 from flask_cors import CORS
-from flask import Flask, send_file, Response, jsonify
+from dotenv import load_dotenv
+from flask import Flask, send_file, Response, jsonify, request
 
 load_dotenv()
 key = os.environ.get("YT_DATA_API")
@@ -18,14 +19,16 @@ app.config['Access-Control-Allow-Headers'] = '*'
 app.config['Access-Control-Allow-Credentials'] = '*'
 
 # dynamic video route with video id
-@app.route('/song/<song_id>', methods=['GET'])
-def get_song_details(song_id):
+@app.route('/song', methods=['GET'])
+def get_song_details():
+  song_name = request.args.get("name")
+  artist = request.args.get("artist")
   url = "https://www.googleapis.com/youtube/v3/search"
   response = requests.get(
       url,
       params={
           "part": "snippet",
-          "q": "Devin Kennedy Forget About You Official Audio",
+          "q": f"{song_name} {artist} Official Audio",
           "key": key,
           "type": "video",
           "maxResults": 1,

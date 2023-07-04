@@ -74,7 +74,6 @@ const Navbar = () => {
 									</DropdownMenuItem>
 									<DropdownMenuItem
 										onClick={() => {
-											localStorage.removeItem("accessToken");
 											router.push("/");
 										}}
 									>
@@ -98,7 +97,6 @@ const Navbar = () => {
 							<Button
 								variant="secondary"
 								onClick={() => {
-									localStorage.removeItem("accessToken");
 									router.push("/");
 								}}
 							>

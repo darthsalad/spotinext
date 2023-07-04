@@ -71,7 +71,6 @@ export async function middleware(req: NextRequest) {
 					process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID!,
 					code
 				);
-				console.log("tokens request from middleware on /account: ", tokens);
 				response.cookies.set("code", code, {
 					httpOnly: false,
 					path: "/",

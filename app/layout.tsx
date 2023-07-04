@@ -1,8 +1,9 @@
-import Footer from "@/components/footer";
 import "./globals.css";
 import Navbar from "@/components/navbar";
-import { ThemeProvider } from "@/components/theme-provider";
+import Footer from "@/components/footer";
+import { Toaster } from "@/components/ui/toaster";
 import QueryWrapper from "@/components/query-provider";
+import { ThemeProvider } from "@/components/theme-provider";
 
 export const metadata = {
 	title: "Nextify - A Spotify Song Downloader Platform",
@@ -25,6 +26,7 @@ export default function RootLayout({
 						<div className="pb-[200px]">
 							{children}
 						</div>
+						<Toaster />
 						<Footer />
 					</ThemeProvider>
 				</QueryWrapper>
