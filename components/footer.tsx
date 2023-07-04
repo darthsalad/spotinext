@@ -6,8 +6,8 @@ import { Github, AtSign } from "lucide-react";
 
 const Footer = () => {
 	return (
-		<div className="w-full my-5 fixed bottom-0 left-0 border-t">
-			<div className="mx-auto flex px-10 py-5 items-start justify-evenly">
+		<div className="w-full my-5 absolute bottom-0 left-0 border-t min-h-max">
+			<div className="mx-auto flex px-10 pt-5 items-start justify-evenly">
 				<h2 className="text-2xl font-semibold">
 					Nextify
 					<span className="text-lg text-muted-foreground font-mono ml-1">

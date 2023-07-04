@@ -5,9 +5,42 @@ import { ThemeToggle } from "./theme-toggle";
 import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useQuery } from "@tanstack/react-query";
+import { LogOut, MoreVertical, User } from "lucide-react";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
 
 const Navbar = () => {
 	const router = useRouter();
+
+	const {
+		data: authStatus,
+		isLoading,
+		error,
+	} = useQuery<boolean>({
+		queryKey: ["auth"],
+		queryFn: async (): Promise<boolean> => {
+			const res = await fetch("/api/auth", {
+				method: "GET",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				credentials: "include",
+			});
+			if (!res.ok) {
+				console.log("error", res.statusText);
+				return false;
+			}
+			const data = await res.json();
+			return data.auth;
+		},
+		refetchInterval: 5000,
+		refetchOnWindowFocus: true,
+	});
 
 	const redirect = () => {
 		router.push("/auth/login");
@@ -25,21 +58,60 @@ const Navbar = () => {
 				<div className="mr-5">
 					<ThemeToggle />
 				</div>
-				{/* {localStorage.getItem("accessToken") ? (
-					<Button
-						variant="secondary"
-						onClick={() => {
-							localStorage.removeItem("accessToken");
-							router.push("/");
-						}}
-					>
-						Logout
+				{authStatus ? (
+					<div>
+						<div className="sm:hidden">
+							<DropdownMenu>
+								<DropdownMenuTrigger asChild>
+									<Button variant="secondary" size="icon">
+										<MoreVertical />
+									</Button>
+								</DropdownMenuTrigger>
+								<DropdownMenuContent align="end">
+									<DropdownMenuItem onClick={() => router.push("/account")}>
+										<User size={18} className="mr-2" />
+										Account
+									</DropdownMenuItem>
+									<DropdownMenuItem
+										onClick={() => {
+											localStorage.removeItem("accessToken");
+											router.push("/");
+										}}
+									>
+										<LogOut size={18} className="mr-2" />
+										Logout
+									</DropdownMenuItem>
+								</DropdownMenuContent>
+							</DropdownMenu>
+						</div>
+						<div className="hidden sm:block">
+							<Button
+								className="mr-2"
+								variant="secondary"
+								onClick={() => {
+									router.push("/account");
+								}}
+							>
+								<User size={18} className="mr-2" />
+								Account
+							</Button>
+							<Button
+								variant="secondary"
+								onClick={() => {
+									localStorage.removeItem("accessToken");
+									router.push("/");
+								}}
+							>
+								<LogOut size={18} className="mr-2" />
+								Logout
+							</Button>
+						</div>
+					</div>
+				) : (
+					<Button variant="secondary" onClick={redirect}>
+						Login
 					</Button>
-				) : ( */}
-				<Button variant="secondary" onClick={redirect}>
-					Login
-				</Button>
-				{/* )} */}
+				)}
 			</div>
 		</div>
 	);

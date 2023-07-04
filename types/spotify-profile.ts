@@ -13,7 +13,7 @@ export type ProfileData = {
 	uri: string;
 };
 
-type ProfileImages = {
+export type ProfileImages = {
 	height: number | null;
 	url: string;
 	width: number | null;

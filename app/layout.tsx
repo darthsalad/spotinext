@@ -18,11 +18,13 @@ export default function RootLayout({
 
 	return (
 		<html lang="en">
-			<body>
+			<body className="relative min-h-screen">
 				<QueryWrapper>
 					<ThemeProvider attribute="class" defaultTheme="system" enableSystem>
 						<Navbar />
-						{children}
+						<div className="pb-[200px]">
+							{children}
+						</div>
 						<Footer />
 					</ThemeProvider>
 				</QueryWrapper>

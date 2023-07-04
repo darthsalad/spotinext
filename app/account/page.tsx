@@ -9,7 +9,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { Avatar } from "@radix-ui/react-avatar";
+import { Avatar, AvatarFallback } from "@radix-ui/react-avatar";
 import { AvatarImage } from "@/components/ui/avatar";
 import { ProfileData } from "@/types/spotify-profile";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -64,11 +64,13 @@ const Account = () => {
 							{isLoading && !profileData ? (
 								<>
 									<Skeleton className="w-32 h-32 rounded-full" />
-									<Skeleton className="h-3 w-full mt-2" />
-									<Skeleton className="h-6 w-full mt-2" />
-									<Skeleton className="h-3 w-full mt-2" />
-									<Skeleton className="h-3 w-full mt-2" />
-									<Skeleton className="h-8 w-7/12 mt-3" />
+									<Skeleton className="h-4 w-full mt-3" />
+									<Skeleton className="h-9 w-full mt-3" />
+									<Skeleton className="h-4 w-full mt-3" />
+									<Skeleton className="h-4 w-full mt-3" />
+									<Skeleton className="h-12 w-7/12 mt-3" />
+									<Skeleton className="h-10 w-11/12 mt-5" />
+									<Skeleton className="h-10 w-11/12 mt-2" />
 								</>
 							) : (
 								<>
@@ -80,7 +82,10 @@ const Account = () => {
 											}
 											alt={profileData?.display_name || "no profile image"}
 											className="w-32 h-32 rounded-full"
-										/>
+											/>
+											<AvatarFallback>
+												<User className="w-32 h-32 rounded-full" />
+											</AvatarFallback>
 									</Avatar>
 									<h2 className="mt-2 text-xl text-muted-foreground">
 										{profileData?.id}
