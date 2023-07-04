@@ -17,12 +17,12 @@ CORS(
     allow_headers=["Content-Type", "Authorization"],
     methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
 )
-app.config["Access-Control-Allow-Origin"] = "*"
-app.config[
-    "Access-Control-Allow-Headers"
-] = "Content-Type, Authorization, X-Requested-With"
-app.config["Access-Control-Allow-Credentials"] = "true"
-app.config["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
+# app.config["Access-Control-Allow-Origin"] = "*"
+# app.config[
+#     "Access-Control-Allow-Headers"
+# ] = "Content-Type, Authorization, X-Requested-With"
+# app.config["Access-Control-Allow-Credentials"] = "true"
+# app.config["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
 
 
 # dynamic video route with video id
