@@ -40,7 +40,6 @@ export default function Home() {
 				console.log("error", res.statusText);
 			}
 			const data = await res.json();
-			console.log(data);
 
 			const artists = data.item.artists.map((artist: any) => {
 				return {

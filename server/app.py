@@ -11,12 +11,10 @@ key = os.environ.get("YT_DATA_API")
 
 app = Flask(__name__)
 CORS(app)
-app.config['CORS_HEADERS'] = 'Content-Type'
-app.config['CORS_ORIGINS'] = ['http://localhost:3000']
-app.config['CORS_METHODS'] = ['GET', 'POST']
 app.config['Access-Control-Allow-Origin'] = 'http://localhost:3000'
-app.config['Access-Control-Allow-Headers'] = '*'
-app.config['Access-Control-Allow-Credentials'] = '*'
+app.config['Access-Control-Allow-Headers'] = 'Content-Type, Authorization, X-Requested-With'
+app.config['Access-Control-Allow-Credentials'] = 'true'
+app.config['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
 
 # dynamic video route with video id
 @app.route('/song', methods=['GET'])
