@@ -1,14 +1,6 @@
-FROM ubuntu:20.04
+FROM python:3.8.5-slim-buster
 
-ENV TZ=Asia/Kolkata \
-    DEBIAN_FRONTEND=noninteractive \
-    YT_DATA_API=AIzaSyAx4A4EgwdbBWmTlwdR7UIVcj6ms8GnoUY
-
-RUN apt update && apt install -y \
-    tzdata \
-    python3 \
-    python3-pip \
-    ffmpeg 
+RUN apt-get update && apt-get install -y ffmpeg
 
 WORKDIR /usr/src/app
 
