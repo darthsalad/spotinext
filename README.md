@@ -1,17 +1,19 @@
 # Nextify - Spotify Music Downloader 
 
-An easy to use Spotify music downloader web app and PWA built with `Next.js` and `Flask` along with `youtube-dl`.
+An easy to use Spotify music downloader web app and PWA built with `Next.js` and `Flask` using `Spotify API` and `yt-dl`.
 
 ## To-Do
 
-- [ ] UI Improvements
-- [ ] Spotify OAuth setup for user authentication
-- [ ] Getting song details from current playing song of the user
+- [x] UI Improvements
+- [x] Spotify OAuth setup for user authentication
+- [x] Getting song details from current playing song of the user
 - [x] Downloading the Official Audio video from YouTube
 - [x] Converting the video to mp3
 - [x] Sending the mp3 via Flask
 - [x] Download the mp3 from the response 
 - [x] Deleting the temporary files(mp3) from the server
+- [ ] Logout function
+- [ ] Middleware for refresh_token & access_token
 
 ## Installation
 
