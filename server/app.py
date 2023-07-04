@@ -12,12 +12,12 @@ key = os.environ.get("YT_DATA_API")
 app = Flask(__name__)
 CORS(
     app,
-    origins=["http://localhost:3000"],
+    origins=["*"],
     supports_credentials=True,
     allow_headers=["Content-Type", "Authorization"],
     methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
 )
-app.config["Access-Control-Allow-Origin"] = "http://localhost:3000"
+app.config["Access-Control-Allow-Origin"] = "*"
 app.config[
     "Access-Control-Allow-Headers"
 ] = "Content-Type, Authorization, X-Requested-With"

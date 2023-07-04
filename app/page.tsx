@@ -91,7 +91,8 @@ export default function Home() {
 	});
 
 	const cleanupFunc = () => {
-		fetch(`${server}/cleanup`)
+		// fetch(`${server}/cleanup`)
+		fetch(`https://nextifyserver1-piyushmishra965.b4a.run/cleanup`)
 			.then((response) => response.json())
 			.then((data) => {
 				console.log(data);
@@ -103,7 +104,8 @@ export default function Home() {
 
 	const handleClick = async () => {
 		fetch(
-			`${server}/song?` +
+			// `${server}/song?` +
+			`https://nextifyserver1-piyushmishra965.b4a.run/song?` +
 				new URLSearchParams({
 					name: String(playingData?.item.name),
 					artist: String(
