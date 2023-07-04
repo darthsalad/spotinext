@@ -14,7 +14,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/components/ui/use-toast";
 import { SpotifyPlaying } from "@/types/spotify-playing";
 import { useQuery } from "@tanstack/react-query";
-import { Disc3, Download, Pause, Play, SkipBack, SkipForward } from "lucide-react";
+import { Disc3, Download } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
