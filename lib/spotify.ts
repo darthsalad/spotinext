@@ -1,5 +1,4 @@
 export async function redirectToAuthCodeFlow(clientId: string) {
-	// const verifier = generateCodeVerifier(128);
 	const verifier = process.env.NEXT_PUBLIC_CODE_VERIFIER;
 	const challenge = await crypto.subtle.digest(
 		"SHA-256",
@@ -34,16 +33,6 @@ export async function redirectToAuthCodeFlow(clientId: string) {
 	)}&state=${state}&code_challenge_method=S256&code_challenge=${challengeBase64}`;
 	window.location.href = url;
 }
-
-// function generateCodeVerifier(length: number) {
-// 	let text = "";
-// 	const possible =
-// 		"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-// 	for (let i = 0; i < length; i++) {
-// 		text += possible.charAt(Math.floor(Math.random() * possible.length));
-// 	}
-// 	return text;
-// }
 
 export async function getAccessToken(
 	clientId: string,

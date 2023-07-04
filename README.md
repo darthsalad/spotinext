@@ -12,7 +12,7 @@ An easy to use Spotify music downloader web app and PWA built with `Next.js` and
 - [x] Sending the mp3 via Flask
 - [x] Download the mp3 from the response 
 - [x] Deleting the temporary files(mp3) from the server
-- [ ] Logout function
+- [ ] Logout function - server actions
 - [ ] Middleware for refresh_token & access_token
 
 ## Installation
@@ -53,6 +53,30 @@ sudo apt install ffmpeg
 winget install Gyan.FFmpeg
 ```
 
+## Environment Variables
+- Modify the `.env.example` file in the root directory and rename it to `.env` after updating the environment variables from your Spotify Developer Dashboard.
+- For the `CODE_VERIFIER`, you can generate one using the following code:
+
+```ts
+function generateCodeVerifier(length: number) {
+	let text = "";
+	const possible =
+		"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+	for (let i = 0; i < length; i++) {
+		text += possible.charAt(Math.floor(Math.random() * possible.length));
+	}
+	return text;
+}
+
+generateCodeVerifier(128);
+```
+
+- For the server directory, add an `.env` file with a single variable (Generate it from the [Google Developer Console](https://console.developers.google.com/):
+```bash
+# .env in /server
+YT_DATA_API=your_youtube_data_api_key
+```
+
 ## Running the app
 
 ### Server
@@ -66,13 +90,13 @@ python main.py
 - `cd` into the root directory of the repo and run the following command:
 
 ```bash
-# Development
+# For Development
 yarn dev 
 
 # or if you use npm
 npm run dev
 
-# Production
+# For Production
 yarn build
 yarn start
 
