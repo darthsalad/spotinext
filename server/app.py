@@ -13,20 +13,12 @@ app = Flask(__name__)
 CORS(app)
 
 @app.after_request
-def after_request(response):
-    response.headers.add('Access-Control-Allow-Origin', '*')
-    response.headers.add('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With')
-    response.headers.add('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+def add_cors_headers(response):
+    response.headers['Access-Control-Allow-Origin'] = request.headers.get('Origin')
+    response.headers['Access-Control-Allow-Credentials'] = 'true'
+    response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
     return response
-# app.config["Access-Control-Allow-Origin"] = "*"
-# app.config[
-#     "Access-Control-Allow-Headers"
-# ] = "Content-Type, Authorization, X-Requested-With"
-# app.config["Access-Control-Allow-Credentials"] = "true"
-# app.config["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
 
-
-# dynamic video route with video id
 @app.route("/song", methods=["GET"])
 def get_song_details():
     song_name = request.args.get("name")
@@ -90,5 +82,5 @@ def cleanup():
 
     return jsonify({"message": "Cleanup successful"}), 200
 
-
-app.run(debug=True, port=8080)
+if __name__ == "__main__":
+    app.run(debug=True, port=8080)

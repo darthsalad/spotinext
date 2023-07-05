@@ -43,7 +43,7 @@ export async function getAccessToken(
 	expires_in: number;
 	refresh_token: string;
 	scope: string;
-}> {
+} | null> {
 	const verifier = process.env.NEXT_PUBLIC_CODE_VERIFIER;
 
 	const params = new URLSearchParams();
@@ -63,6 +63,7 @@ export async function getAccessToken(
 	if (!response.ok) {
 		const data = await response.json();
 		console.log(data, response.statusText);
+		return null;
 	}
 	const data = await response.json();
 	return data;
@@ -73,7 +74,7 @@ export async function refreshAccessToken(refreshToken: string): Promise<{
 	token_type: string;
 	expires_in: number;
 	scope: string;
-}> {
+} | null> {
 	const clientId = process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID!;
 
 	const res = await fetch("https://accounts.spotify.com/api/token", {
@@ -89,6 +90,9 @@ export async function refreshAccessToken(refreshToken: string): Promise<{
 	});
 	if (!res.ok) {
 		console.log(res.statusText);
+		const data = await res.json();
+		console.log(data);
+		return null;
 	}
 	const data = await res.json();
 	console.log("newTokens: ", data);

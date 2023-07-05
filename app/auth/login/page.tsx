@@ -23,7 +23,7 @@ const Login = () => {
 			<Card className="w-9/12 max-w-sm mx-auto rounded-md shadow-md overflow-hidden">
 				<CardHeader>
 					<CardTitle>Account Login</CardTitle>
-					<CardDescription>Connect Spotify Account to Nextify</CardDescription>
+					<CardDescription>Connect Spotify Account to Spotinext</CardDescription>
 					<CardContent className="p-0">
 						<div className="w-full mt-5">
 							<Button

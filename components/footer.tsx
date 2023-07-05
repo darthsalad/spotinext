@@ -9,7 +9,7 @@ const Footer = () => {
 		<div className="w-full my-5 absolute bottom-0 left-0 border-t min-h-max">
 			<div className="mx-auto flex px-10 pt-5 items-start justify-evenly">
 				<h2 className="text-2xl font-semibold">
-					Nextify
+					Spotinext
 					<span className="text-lg text-muted-foreground font-mono ml-1">
 						v1.0
 					</span>

@@ -73,7 +73,7 @@ const Navbar = () => {
 	return (
 		<div className="my-5 mx-auto px-10 pb-5 flex border-b item-center justify-between">
 			<h2 className="text-3xl font-semibold">
-				<Link href="/">Nextify</Link>
+				<Link href="/">Spotinext</Link>
 				<span className="ml-1 font-bold bg-secondary text-sm px-2 rounded-xl font-mono">
 					Beta
 				</span>

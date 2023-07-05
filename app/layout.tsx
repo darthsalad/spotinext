@@ -6,9 +6,9 @@ import QueryWrapper from "@/components/query-provider";
 import { ThemeProvider } from "@/components/theme-provider";
 
 export const metadata = {
-	title: "Nextify - A Spotify Song Downloader Platform",
+	title: "Spotinext - A Spotify Song Downloader Platform",
 	description:
-		"Download current playing song from Spotify with Nextify using Nextify.",
+		"Download current playing song from Spotify with Spotinext using Spotinext.",
 };
 
 export default function RootLayout({

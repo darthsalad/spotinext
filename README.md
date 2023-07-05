@@ -1,4 +1,4 @@
-# Nextify - Spotify Music Downloader 
+# SpotiNext - Spotify Music Downloader 
 
 An easy to use Spotify music downloader web app and PWA built with `Next.js` and `Flask` using `Spotify API` and `yt-dl`.
 

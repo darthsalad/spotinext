@@ -8,6 +8,7 @@
 
 # container
 /server/venv
+__pycache__/
 # Dockerfile
 
 # testing
