@@ -11,7 +11,7 @@ export async function redirectToAuthCodeFlow(clientId: string) {
 		.replace(/\//g, "_")
 		.replace(/=+$/, "");
 
-	const redirectUri = `${process.env.NEXT_PUBLIC_ORIGIN_URL}/account`;
+	const redirectUri = `https://spotinext.vercel.app/account`;
 	const scopes = [
 		"user-read-private",
 		"user-read-email",
