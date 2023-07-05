@@ -74,13 +74,13 @@ export async function middleware(req: NextRequest) {
 				response.cookies.set("access_token", tokens.access_token, {
 					httpOnly: true,
 					path: "/",
-					sameSite: "none",
+					sameSite: "strict",
 					expires: new Date(now.getTime() + tokens.expires_in * 1000),
 				});
 				response.cookies.set("refresh_token", tokens.refresh_token, {
 					httpOnly: true,
 					path: "/",
-					sameSite: "none",
+					sameSite: "strict",
 					expires: new Date(now.getTime() + 365 * 24 * 60 * 60 * 1000),
 				});
 				response.cookies.set(
@@ -91,7 +91,7 @@ export async function middleware(req: NextRequest) {
 					{
 						httpOnly: true,
 						path: "/",
-						sameSite: "none",
+						sameSite: "strict",
 						expires: new Date(now.getTime() + tokens.expires_in * 1000),
 					}
 				);
