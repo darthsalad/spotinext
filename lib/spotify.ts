@@ -61,7 +61,8 @@ export async function getAccessToken(
 		body: params,
 	});
 	if (!response.ok) {
-		console.log(response.statusText);
+		const data = await response.json();
+		console.log(data, response.statusText);
 	}
 	const data = await response.json();
 	return data;
