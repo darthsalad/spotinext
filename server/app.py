@@ -10,14 +10,14 @@ load_dotenv()
 key = os.environ.get("YT_DATA_API")
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "*"}})
 
-@app.after_request
-def add_cors_headers(response):
-    response.headers['Access-Control-Allow-Origin'] = 'https://spotinext.vercel.app'
-    response.headers['Access-Control-Allow-Credentials'] = 'true'
-    response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
-    return response
+# @app.after_request
+# def add_cors_headers(response):
+#     response.headers['Access-Control-Allow-Origin'] = 'https://spotinext.vercel.app'
+#     response.headers['Access-Control-Allow-Credentials'] = 'true'
+#     response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
+#     return response
 
 @app.route("/song", methods=["GET"])
 def get_song_details():
@@ -71,7 +71,11 @@ def get_song_details():
 
     for file in os.listdir():
         if file.endswith(".mp3"):
-            return send_file(file, as_attachment=True)
+            response = send_file(file, as_attachment=True)
+            response.headers["Access-Control-Allow-Origin"] = "*"
+            response.headers["Access-Control-Allow-Credentials"] = "true"
+            response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
+            return response
 
 
 @app.route("/cleanup", methods=["GET"])
@@ -80,7 +84,11 @@ def cleanup():
         if file.endswith(".mp3") or file.endswith(".webm"):
             os.remove(file)
 
-    return jsonify({"message": "Cleanup successful"}), 200
+    response = jsonify({"message": "Cleanup successful"})
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Credentials"] = "true"
+    response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
+    return response
 
 if __name__ == "__main__":
     app.run(debug=True, port=8080)
