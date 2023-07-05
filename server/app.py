@@ -77,7 +77,7 @@ def get_song_details():
 @app.route("/cleanup", methods=["GET"])
 def cleanup():
     for file in os.listdir():
-        if file.endswith(".mp3"):
+        if file.endswith(".mp3") or file.endswith(".webm"):
             os.remove(file)
 
     return jsonify({"message": "Cleanup successful"}), 200
