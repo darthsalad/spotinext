@@ -15,6 +15,15 @@ export async function GET(req: Request) {
 				credentials: "include",
 			}
 		);
+		if (!request.ok) {
+			const data = await request.json();
+			return new Response(JSON.stringify(data), {
+				status: 400,
+				headers: {
+					"Content-Type": "application/json",
+				},
+			});
+		}
 		const response = await request.json();
 		return new Response(JSON.stringify(response), {
 			status: 200,
@@ -23,7 +32,7 @@ export async function GET(req: Request) {
 			},
 		});
 	} else {
-		return new Response(null, {
+		return new Response(JSON.stringify({ message: "No token found. Please login!" }), {
 			status: 400,
 			headers: {
 				"Content-Type": "application/json",

@@ -11,7 +11,7 @@ export async function redirectToAuthCodeFlow(clientId: string) {
 		.replace(/\//g, "_")
 		.replace(/=+$/, "");
 
-	const redirectUri = `https://spotinext.vercel.app/account`;
+	const redirectUri = `${process.env.NEXT_PUBLIC_ORIGIN_URL}/account`;
 	const scopes = [
 		"user-read-private",
 		"user-read-email",
@@ -50,7 +50,7 @@ export async function getAccessToken(
 	params.append("client_id", clientId);
 	params.append("grant_type", "authorization_code");
 	params.append("code", code);
-	params.append("redirect_uri", "http://localhost:3000/account");
+	params.append("redirect_uri", `${process.env.NEXT_PUBLIC_ORIGIN_URL}/account`);
 	params.append("code_verifier", verifier!);
 
 	const response = await fetch("https://accounts.spotify.com/api/token", {
@@ -95,7 +95,6 @@ export async function refreshAccessToken(refreshToken: string): Promise<{
 		return null;
 	}
 	const data = await res.json();
-	console.log("newTokens: ", data);
 	return {
 		access_token: data.access_token,
 		token_type: data.token_type,

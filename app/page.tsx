@@ -38,7 +38,9 @@ export default function Home() {
 				credentials: "include",
 			});
 			if (!res.ok) {
-				console.log("error", res.statusText);
+				const error = await res.json();
+				console.log(error);
+				return;
 			}
 			const data = await res.json();
 

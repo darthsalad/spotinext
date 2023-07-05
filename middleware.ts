@@ -1,10 +1,11 @@
-// check expiry of access token from httpOnly cookie and request new one if expired from refresh token
 import { NextRequest, NextResponse } from "next/server";
 import { getAccessToken, refreshAccessToken } from "./lib/spotify";
 
 export async function middleware(req: NextRequest) {
 	if (!req.cookies.get("access_token") && req.cookies.get("refresh_token")) {
-		const tokens = await refreshAccessToken(req.cookies.get("refresh_token")!.value);
+		const tokens = await refreshAccessToken(
+			req.cookies.get("refresh_token")!.value
+		);
 		if (tokens) {
 			const now = new Date();
 			const response = NextResponse.next();
@@ -40,34 +41,38 @@ export async function middleware(req: NextRequest) {
 		const response = NextResponse.next();
 		const now = new Date();
 		if (code) {
-			response.cookies.set("code", code, {
-				httpOnly: true,
-				sameSite: "strict",
-				path: "/",
-				expires: new Date(now.getTime() + 10 * 24 * 60 * 60 * 1000),
-			});
-			const tokens = await getAccessToken(
-				process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID!,
-				code
-			);
-			if (tokens) {
-				response.cookies.set("access_token", tokens.access_token, {
-					httpOnly: true,
-					sameSite: "strict",
-					path: "/",
-					expires: new Date(now.getTime() + tokens.expires_in * 1000),
-				});
-				response.cookies.set("refresh_token", tokens.refresh_token, {
-					httpOnly: true,
-					sameSite: "strict",
-					path: "/",
-					expires: new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000),
-				});
+			if (req.cookies.get("access_token")) {
 				return response;
 			} else {
-				return NextResponse.redirect(
-					`${process.env.NEXT_PUBLIC_ORIGIN_URL}/auth/login`
+				response.cookies.set("code", code, {
+					httpOnly: true,
+					sameSite: "strict",
+					path: "/",
+					expires: new Date(now.getTime() + 10 * 24 * 60 * 60 * 1000),
+				});
+				const tokens = await getAccessToken(
+					process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID!,
+					code
 				);
+				if (tokens) {
+					response.cookies.set("access_token", tokens.access_token, {
+						httpOnly: true,
+						sameSite: "strict",
+						path: "/",
+						expires: new Date(now.getTime() + tokens.expires_in * 1000),
+					});
+					response.cookies.set("refresh_token", tokens.refresh_token, {
+						httpOnly: true,
+						sameSite: "strict",
+						path: "/",
+						expires: new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000),
+					});
+					return response;
+				} else {
+					return NextResponse.redirect(
+						`${process.env.NEXT_PUBLIC_ORIGIN_URL}/auth/login`
+					);
+				}
 			}
 		} else {
 			return NextResponse.redirect(
@@ -80,7 +85,9 @@ export async function middleware(req: NextRequest) {
 		if (req.cookies.get("access_token")) {
 			return NextResponse.next();
 		} else {
-			return NextResponse.redirect(`${process.env.NEXT_PUBLIC_ORIGIN_URL}/auth/login`);
+			return NextResponse.redirect(
+				`${process.env.NEXT_PUBLIC_ORIGIN_URL}/auth/login`
+			);
 		}
 	}
 }
