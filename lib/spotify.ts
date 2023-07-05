@@ -11,7 +11,7 @@ export async function redirectToAuthCodeFlow(clientId: string) {
 		.replace(/\//g, "_")
 		.replace(/=+$/, "");
 
-	const redirectUri = `${window.location.origin}/account`;
+	const redirectUri = `${process.env.NEXT_PUBLIC_ORIGIN_URL}/account`;
 	const scopes = [
 		"user-read-private",
 		"user-read-email",
