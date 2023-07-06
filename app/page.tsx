@@ -93,7 +93,15 @@ export default function Home() {
 	});
 
 	const cleanupFunc = () => {
-		fetch(`${server}/cleanup`)
+		fetch(`${server}/cleanup`, {
+			method: "GET",
+			headers: {
+				"Content-Type": "*/*",
+				"Accept": "*/*",
+				"Access-Control-Allow-Origin": "*",
+			},
+			credentials: "include",
+		})
 			.then((response) => response.json())
 			.then((data) => {
 				console.log(data);
@@ -119,8 +127,11 @@ export default function Home() {
 			{
 				method: "GET",
 				headers: {
-					"Content-Type": "application/json",
+					"Content-Type": "*/*",
+					"Accept": "*/*",
+					"Access-Control-Allow-Origin": "*",
 				},
+				credentials: "include",
 			}
 		)
 			.then((response) => response.blob())
