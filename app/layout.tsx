@@ -15,13 +15,27 @@ export const metadata = {
 			"Download current playing song from Spotify with Spotinext using Spotinext.",
 		url: "https://spotinext.vercel.app/",
 		siteName: "Spotinext",
-		image: "/og-banner.png",
+		images: [
+			{
+				url: "/og-banner.png",
+				width: 1200,
+				height: 630,
+				alt: "Spotinext - A Spotify Song Downloader Platform",
+			},
+		],
 	},
 	twitter: {
 		title: "Spotinext - A Spotify Song Downloader Platform",
 		description:
 			"Download current playing song from Spotify with Spotinext using Spotinext.",
-		image: "/og-banner.png",
+		images: [
+			{
+				url: "/og-banner.png",
+				width: 1200,
+				height: 630,
+				alt: "Spotinext - A Spotify Song Downloader Platform",
+			},
+		],
 		cardType: "summary_large_image",
 		domain: "https://spotinext.vercel.app/",
 		url: "https://spotinext.vercel.app/",
