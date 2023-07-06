@@ -1,19 +1,19 @@
 # SpotiNext - Spotify Music Downloader 
 
-An easy to use Spotify music downloader web app and PWA built with `Next.js` and `Flask` using `Spotify API` and `yt-dl`.
+An easy-to-use Spotify music downloader web app and PWA built with `Next.js` and `Flask` using `Spotify API` and `yt-dl`.
 
 ## To-Do
 
 - [x] UI Improvements
 - [x] Spotify OAuth setup for user authentication
-- [x] Getting song details from current playing song of the user
+- [x] Getting song details from the current playing song of the user
 - [x] Downloading the Official Audio video from YouTube
 - [x] Converting the video to mp3
 - [x] Sending the mp3 via Flask
 - [x] Download the mp3 from the response 
 - [x] Deleting the temporary files(mp3) from the server
-- [ ] Logout function - server actions
-- [ ] Middleware for refresh_token & access_token
+- [x] Logout function - server actions
+- [x] Middleware for refresh_token & access_token
 
 ## Installation
 
@@ -29,7 +29,7 @@ source ./venv/bin/activate
 python -m venv ./venv
 .\venv\Scripts\Activate.ps1
 ```
-- Check if the virtual environment got activated by running `which python` or `where python` for windows or ``pip -V`` for both which'll show the current active Python environment
+- Check if the virtual environment got activated by running `which python` or `where python` for Windows or ``pip -V`` for both which shows the current active Python environment
 - Install the dependencies by running:
 
 ```bash
