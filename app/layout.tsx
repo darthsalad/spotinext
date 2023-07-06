@@ -8,11 +8,11 @@ import { ThemeProvider } from "@/components/theme-provider";
 export const metadata = {
 	title: "Spotinext - A Spotify Song Downloader Platform",
 	description:
-		"Download current playing song from Spotify with Spotinext using Spotinext.",
+		"Download current playing song from Spotify with Spotinext.",
 	openGraph: {
 		title: "Spotinext - A Spotify Song Downloader Platform",
 		description:
-			"Download current playing song from Spotify with Spotinext using Spotinext.",
+			"Download current playing song from Spotify with Spotinext.",
 		url: "https://spotinext.vercel.app/",
 		siteName: "Spotinext",
 		images: [
@@ -27,7 +27,7 @@ export const metadata = {
 	twitter: {
 		title: "Spotinext - A Spotify Song Downloader Platform",
 		description:
-			"Download current playing song from Spotify with Spotinext using Spotinext.",
+			"Download current playing song from Spotify with Spotinext.",
 		images: [
 			{
 				url: "/og-banner.png",

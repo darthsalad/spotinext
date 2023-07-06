@@ -2,9 +2,8 @@ import os
 import requests
 import urllib.parse
 import yt_dlp as youtube_dl
-# from flask_cors import CORS
 from dotenv import load_dotenv
-from flask import Flask, send_file, jsonify, request
+from flask import Flask, send_file, jsonify, request, after_this_request
 
 load_dotenv()
 key = os.environ.get("YT_DATA_API")
@@ -14,18 +13,12 @@ app.config["CORS_HEADERS"] = "Content-Type"
 app.config["Access-Control-Allow-Origin"] = "https://spotinext.vercel.app"
 app.config["Access-Control-Allow-Credentials"] = "true"
 
-# CORS(
-#     app, 
-#     resources={r"/*": {"origins": "https://spotinext.vercel.app"}}, 
-#     supports_credentials=True
-# )
-
 @app.after_request
-def after_request(response):
+def apply_caching(response):
     response.headers["Access-Control-Allow-Origin"] = "https://spotinext.vercel.app"
     response.headers["Access-Control-Allow-Credentials"] = "true"
     response.headers["Access-Control-Allow-Headers"] = "Content-Type"
-    response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
+    response.headers["Access-Control-Allow-Methods"] = "GET, OPTIONS"
     return response
         
 
@@ -87,25 +80,30 @@ def get_song_details():
     for file in os.listdir():
         if file.endswith(".mp3"):
             response = send_file(file, as_attachment=True)
-            response.headers.add("Access-Control-Allow-Origin", "*")
-            response.headers.add("Access-Control-Allow-Credentials", "true")
-            response.headers.add("Access-Control-Allow-Headers", "*")
-            response.headers.add("Access-Control-Allow-Methods", "*")
+            @after_this_request
+            def end_action(response):
+                @response.call_on_close
+                def cleanup():
+                    try:
+                        os.remove(file)
+                        print("removed file")
+                    except Exception as e:
+                        print(e)
             return response
 
 
-@app.route("/cleanup", methods=["GET"])
-def cleanup():
-    for file in os.listdir():
-        if file.endswith(".mp3") or file.endswith(".webm"):
-            os.remove(file)
+# @app.route("/cleanup", methods=["GET"])
+# def cleanup():
+#     for file in os.listdir():
+#         if file.endswith(".mp3") or file.endswith(".webm"):
+#             os.remove(file)
 
-    response = jsonify({"message": "Cleanup successful"})
-    response.headers.add("Access-Control-Allow-Origin", "*")
-    response.headers.add("Access-Control-Allow-Credentials", "true")
-    response.headers.add("Access-Control-Allow-Headers", "*")
-    response.headers.add("Access-Control-Allow-Methods", "*")
-    return response
+#     response = jsonify({"message": "Cleanup successful"})
+#     response.headers.add("Access-Control-Allow-Origin", "*")
+#     response.headers.add("Access-Control-Allow-Credentials", "true")
+#     response.headers.add("Access-Control-Allow-Headers", "*")
+#     response.headers.add("Access-Control-Allow-Methods", "*")
+#     return response
 
 
 if __name__ == "__main__":

@@ -17,11 +17,14 @@ import { useQuery } from "@tanstack/react-query";
 import { Disc3, Download } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function Home() {
 	const router = useRouter();
 	const { toast } = useToast();
 	const server = process.env.NEXT_PUBLIC_SERVER_URL!;
+	const [downloadName, setDownloadName] = useState<string>("");
+	const [downloadArtist, setDownloadArtist] = useState<string>("");
 
 	const {
 		data: playingData,
@@ -126,7 +129,6 @@ export default function Home() {
 				}),
 			{
 				method: "GET",
-				mode: "no-cors",
 				headers: {
 					"Content-Type": "*/*",
 					"Accept": "*/*",
@@ -141,18 +143,14 @@ export default function Home() {
 				link.href = url;
 				link.setAttribute(
 					"download",
-					`${playingData?.item.name} - ${playingData?.item.artists
-						.map((artist) => {
-							return artist.name;
-						})
-						.join(", ")}.mp3`
+					`${downloadName} - ${downloadArtist}.mp3`
 				);
 				document.body.appendChild(link);
 				link.click();
 				link.parentNode!.removeChild(link);
 			})
-			.then(() => {
-				cleanupFunc();
+			.finally(() => {
+				// cleanupFunc();
 				toast({
 					title: "Song Downloaded!",
 					description: "Confirm the download in your browser to save the song.",
@@ -252,7 +250,17 @@ export default function Home() {
 											/>
 											<Button
 												className="w-full mt-5 rounded-full bg-green-600 flex items-center"
-												onClick={handleClick}
+												onClick={() => {
+													handleClick();
+													setDownloadName(playingData?.item.name);
+													setDownloadArtist(
+														playingData?.item.artists
+															.map((artist) => {
+																return artist.name;
+															})
+															.join(", ")
+													);
+												}}
 											>
 												<Download size={18} className="mr-2" /> Download Audio
 											</Button>
