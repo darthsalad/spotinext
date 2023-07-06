@@ -20,7 +20,7 @@ app.config["Access-Control-Allow-Credentials"] = "true"
 #     supports_credentials=True
 # )
 
-@app.after_request() # type: ignore
+@app.after_request
 def after_request(response):
     response.headers["Access-Control-Allow-Origin"] = "https://spotinext.vercel.app"
     response.headers["Access-Control-Allow-Credentials"] = "true"
