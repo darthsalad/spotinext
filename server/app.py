@@ -89,6 +89,11 @@ def get_song_details():
                         print("removed file")
                     except Exception as e:
                         print(e)
+                        
+            response.headers.add("Access-Control-Allow-Origin", "*")
+            response.headers.add("Access-Control-Allow-Credentials", "true")
+            response.headers.add("Access-Control-Allow-Headers", "*")
+            response.headers.add("Access-Control-Allow-Methods", "*")
             return response
 
 
