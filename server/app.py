@@ -2,7 +2,7 @@ import os
 import requests
 import urllib.parse
 import yt_dlp as youtube_dl
-from flask_cors import CORS
+# from flask_cors import CORS
 from dotenv import load_dotenv
 from flask import Flask, send_file, jsonify, request
 
@@ -14,12 +14,20 @@ app.config["CORS_HEADERS"] = "Content-Type"
 app.config["Access-Control-Allow-Origin"] = "https://spotinext.vercel.app"
 app.config["Access-Control-Allow-Credentials"] = "true"
 
-CORS(
-    app, 
-    resources={r"/*": {"origins": "https://spotinext.vercel.app"}}, 
-    supports_credentials=True
-)
+# CORS(
+#     app, 
+#     resources={r"/*": {"origins": "https://spotinext.vercel.app"}}, 
+#     supports_credentials=True
+# )
 
+@app.after_request() # type: ignore
+def after_request(response):
+    response.headers["Access-Control-Allow-Origin"] = "https://spotinext.vercel.app"
+    response.headers["Access-Control-Allow-Credentials"] = "true"
+    response.headers["Access-Control-Allow-Headers"] = "Content-Type"
+    response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
+    return response
+        
 
 @app.route("/", methods=["GET"])
 def home():
@@ -78,7 +86,12 @@ def get_song_details():
 
     for file in os.listdir():
         if file.endswith(".mp3"):
-            return send_file(file, as_attachment=True)
+            response = send_file(file, as_attachment=True)
+            response.headers.add("Access-Control-Allow-Origin", "*")
+            response.headers.add("Access-Control-Allow-Credentials", "true")
+            response.headers.add("Access-Control-Allow-Headers", "*")
+            response.headers.add("Access-Control-Allow-Methods", "*")
+            return response
 
 
 @app.route("/cleanup", methods=["GET"])
@@ -87,7 +100,12 @@ def cleanup():
         if file.endswith(".mp3") or file.endswith(".webm"):
             os.remove(file)
 
-    return jsonify({"message": "Cleanup successful"})
+    response = jsonify({"message": "Cleanup successful"})
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    response.headers.add("Access-Control-Allow-Credentials", "true")
+    response.headers.add("Access-Control-Allow-Headers", "*")
+    response.headers.add("Access-Control-Allow-Methods", "*")
+    return response
 
 
 if __name__ == "__main__":
