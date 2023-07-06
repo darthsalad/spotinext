@@ -100,7 +100,7 @@ export default function Home() {
 				"Accept": "*/*",
 				"Origin": "*",
 			},
-			credentials: "include",
+			mode: "no-cors",
 		})
 			.then((response) => response.json())
 			.then((data) => {
@@ -126,12 +126,12 @@ export default function Home() {
 				}),
 			{
 				method: "GET",
+				mode: "no-cors",
 				headers: {
 					"Content-Type": "*/*",
 					"Accept": "*/*",
 					"Origin": "*",
 				},
-				credentials: "include",
 			}
 		)
 			.then((response) => response.blob())
