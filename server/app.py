@@ -89,10 +89,9 @@ def get_song_details():
                     except Exception as e:
                         print(e)
                         
-            response.headers.add("Access-Control-Allow-Origin", "*")
+            response.headers.add("Access-Control-Allow-Origin", request.headers["Origin"])
             response.headers.add("Access-Control-Allow-Credentials", "true")
-            response.headers.add("Access-Control-Allow-Headers", "*")
-            response.headers.add("Access-Control-Allow-Methods", "*")
+            response.headers.add("Access-Control-Allow-Methods", "GET, OPTIONS")
             return response
 
 
