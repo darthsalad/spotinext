@@ -2,24 +2,28 @@ import os
 import requests
 import urllib.parse
 import yt_dlp as youtube_dl
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 from dotenv import load_dotenv
-from flask import Flask, send_file, Response, jsonify, request
+from flask import Flask, send_file, jsonify, request
 
 load_dotenv()
 key = os.environ.get("YT_DATA_API")
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "*"}})
+CORS(
+    app, 
+    resources={r"/*": {"origins": "*"}}, 
+    supports_credentials=True
+)
 
-# @app.after_request
-# def add_cors_headers(response):
-#     response.headers['Access-Control-Allow-Origin'] = 'https://spotinext.vercel.app'
-#     response.headers['Access-Control-Allow-Credentials'] = 'true'
-#     response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
-#     return response
+
+@app.route("/", methods=["GET"])
+def home():
+    return "Hello World!"
+
 
 @app.route("/song", methods=["GET"])
+@cross_origin(origins="*", supports_credentials=True)
 def get_song_details():
     song_name = request.args.get("name")
     artist = request.args.get("artist")
@@ -28,7 +32,7 @@ def get_song_details():
         url,
         params={
             "part": "snippet",
-            "q": f"{song_name} {urllib.parse.unquote_plus(artist)} Official Audio",
+            "q": f"{song_name} {urllib.parse.unquote_plus(str(artist))} Official Audio",
             "key": key,
             "type": "video",
             "maxResults": 1,
@@ -71,24 +75,18 @@ def get_song_details():
 
     for file in os.listdir():
         if file.endswith(".mp3"):
-            response = send_file(file, as_attachment=True)
-            response.headers["Access-Control-Allow-Origin"] = "*"
-            response.headers["Access-Control-Allow-Credentials"] = "true"
-            response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
-            return response
+            return send_file(file, as_attachment=True)
 
 
 @app.route("/cleanup", methods=["GET"])
+@cross_origin(origins="*", supports_credentials=True)
 def cleanup():
     for file in os.listdir():
         if file.endswith(".mp3") or file.endswith(".webm"):
             os.remove(file)
 
-    response = jsonify({"message": "Cleanup successful"})
-    response.headers["Access-Control-Allow-Origin"] = "*"
-    response.headers["Access-Control-Allow-Credentials"] = "true"
-    response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
-    return response
+    return jsonify({"message": "Cleanup successful"})
+
 
 if __name__ == "__main__":
-    app.run(debug=True, port=8080)
+    app.run(debug=True, port=8080, host="0.0.0.0", load_dotenv=True)
