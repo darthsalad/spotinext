@@ -12,7 +12,7 @@ key = os.environ.get("YT_DATA_API")
 app = Flask(__name__)
 app.config["CORS_HEADERS"] = "Content-Type"
 app.config["Access-Control-Allow-Origin"] = "https://spotinext.vercel.app"
-app.config["Access-Control-Allow-Credentials"] = "true"
+app.config["Access-Control-Allow-Credentials"] = "true0"
 
 CORS(
     app, 
@@ -27,7 +27,7 @@ def home():
 
 
 @app.route("/song", methods=["GET"])
-@cross_origin()
+@cross_origin(supports_credentials=True)
 def get_song_details():
     song_name = request.args.get("name")
     artist = request.args.get("artist")
@@ -83,7 +83,7 @@ def get_song_details():
 
 
 @app.route("/cleanup", methods=["GET"])
-@cross_origin()
+@cross_origin(supports_credentials=True)
 def cleanup():
     for file in os.listdir():
         if file.endswith(".mp3") or file.endswith(".webm"):
