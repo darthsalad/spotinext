@@ -2,10 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { getAccessToken, refreshAccessToken } from "./lib/spotify";
 
 export async function middleware(req: NextRequest) {
-	const refreshToken = req.cookies.get("refresh_token");
-	if (!req.cookies.get("access_token") && refreshToken) {
+	if (!req.cookies.get("access_token") && req.cookies.get("refresh_token")) {
 		const tokens = await refreshAccessToken(
-			refreshToken.value
+			req.cookies.get("refresh_token")!.value
 		);
 		if (tokens) {
 			const now = new Date();
@@ -17,12 +16,16 @@ export async function middleware(req: NextRequest) {
 				path: "/",
 				expires: new Date(now.getTime() + tokens.expires_in * 1000),
 			});
-			response.cookies.set("refresh_token", refreshToken.value, {
-				httpOnly: true,
-				sameSite: "strict",
-				path: "/",
-				expires: new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000),
-			});
+			response.cookies.set(
+				"refresh_token",
+				req.cookies.get("refresh_token")!.value,
+				{
+					httpOnly: true,
+					sameSite: "strict",
+					path: "/",
+					expires: new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000),
+				}
+			);
 			response.cookies.set("code", codeCookie?.value!, {
 				httpOnly: true,
 				sameSite: "strict",

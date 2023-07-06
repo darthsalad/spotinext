@@ -95,6 +95,7 @@ export async function refreshAccessToken(refreshToken: string): Promise<{
 		return null;
 	}
 	const data = await res.json();
+	console.log("refreshed access token", data);
 	return {
 		access_token: data.access_token,
 		token_type: data.token_type,

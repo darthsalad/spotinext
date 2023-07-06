@@ -9,17 +9,16 @@ load_dotenv()
 key = os.environ.get("YT_DATA_API")
 
 app = Flask(__name__)
-app.config["CORS_HEADERS"] = "Content-Type"
-app.config["Access-Control-Allow-Origin"] = "https://spotinext.vercel.app"
-app.config["Access-Control-Allow-Credentials"] = "true"
 
 @app.after_request
 def apply_caching(response):
-    response.headers["Access-Control-Allow-Origin"] = "https://spotinext.vercel.app"
-    response.headers["Access-Control-Allow-Credentials"] = "true"
-    response.headers["Access-Control-Allow-Headers"] = "Content-Type"
-    response.headers["Access-Control-Allow-Methods"] = "GET, OPTIONS"
-    return response
+    white_origins = ["https://spotinext.vercel.app", "http://localhost:3000"]
+    if request.headers["Origin"] in white_origins:
+        response.headers["Access-Control-Allow-Origin"] = request.headers["Origin"]
+        response.headers["Access-Control-Allow-Credentials"] = "true"
+        response.headers["Access-Control-Allow-Headers"] = "Content-Type"
+        response.headers["Access-Control-Allow-Methods"] = "GET, OPTIONS"
+        return response
         
 
 @app.route("/", methods=["GET"])
