@@ -98,7 +98,7 @@ export default function Home() {
 			headers: {
 				"Content-Type": "*/*",
 				"Accept": "*/*",
-				// "Access-Control-Allow-Origin": "*",
+				"Origin": "*",
 			},
 			credentials: "include",
 		})
@@ -129,7 +129,7 @@ export default function Home() {
 				headers: {
 					"Content-Type": "*/*",
 					"Accept": "*/*",
-					// "Access-Control-Allow-Origin": "*",
+					"Origin": "*",
 				},
 				credentials: "include",
 			}
