@@ -2,7 +2,7 @@ import os
 import requests
 import urllib.parse
 import yt_dlp as youtube_dl
-from flask_cors import CORS, cross_origin
+from flask_cors import CORS
 from dotenv import load_dotenv
 from flask import Flask, send_file, jsonify, request
 
@@ -26,8 +26,7 @@ def home():
     return "Hello World!"
 
 
-@app.route("/song", methods=["GET"])
-@cross_origin(supports_credentials=True)
+@app.route("/song", methods=["GET"]) # type: ignore
 def get_song_details():
     song_name = request.args.get("name")
     artist = request.args.get("artist")
@@ -83,7 +82,6 @@ def get_song_details():
 
 
 @app.route("/cleanup", methods=["GET"])
-@cross_origin(supports_credentials=True)
 def cleanup():
     for file in os.listdir():
         if file.endswith(".mp3") or file.endswith(".webm"):
