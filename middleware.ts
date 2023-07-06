@@ -16,16 +16,12 @@ export async function middleware(req: NextRequest) {
 				path: "/",
 				expires: new Date(now.getTime() + tokens.expires_in * 1000),
 			});
-			response.cookies.set(
-				"refresh_token",
-				req.cookies.get("refresh_token")!.value,
-				{
-					httpOnly: true,
-					sameSite: "strict",
-					path: "/",
-					expires: new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000),
-				}
-			);
+			response.cookies.set("refresh_token", tokens.refresh_token, {
+				httpOnly: true,
+				sameSite: "strict",
+				path: "/",
+				expires: new Date(now.getTime() + 10 * 24 * 60 * 60 * 1000),
+			});
 			response.cookies.set("code", codeCookie?.value!, {
 				httpOnly: true,
 				sameSite: "strict",
@@ -82,7 +78,7 @@ export async function middleware(req: NextRequest) {
 						httpOnly: true,
 						sameSite: "strict",
 						path: "/",
-						expires: new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000),
+						expires: new Date(now.getTime() + 10 * 24 * 60 * 60 * 1000),
 					});
 					return response;
 				} else {

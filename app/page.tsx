@@ -95,25 +95,6 @@ export default function Home() {
 		refetchOnWindowFocus: true,
 	});
 
-	const cleanupFunc = () => {
-		fetch(`${server}/cleanup`, {
-			method: "GET",
-			headers: {
-				"Content-Type": "*/*",
-				"Accept": "*/*",
-				"Origin": "*",
-			},
-			mode: "no-cors",
-		})
-			.then((response) => response.json())
-			.then((data) => {
-				console.log(data);
-			})
-			.catch((error) => {
-				console.error("Error:", error);
-			});
-	};
-
 	const handleClick = async () => {
 		fetch(
 			`${server}/song?` +
@@ -130,9 +111,9 @@ export default function Home() {
 			{
 				method: "GET",
 				headers: {
-					"Content-Type": "*/*",
-					"Accept": "*/*",
-					"Origin": "*",
+					"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+					Accept: "*/*",
+					Origin: "*",
 				},
 			}
 		)
@@ -149,12 +130,13 @@ export default function Home() {
 				link.click();
 				link.parentNode!.removeChild(link);
 			})
-			.finally(() => {
-				// cleanupFunc();
+			.then(() => {
 				toast({
 					title: "Song Downloaded!",
 					description: "Confirm the download in your browser to save the song.",
 				});
+				setDownloadName("");
+				setDownloadArtist("");
 			})
 			.catch((error) => {
 				console.error("Error:", error);

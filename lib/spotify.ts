@@ -71,6 +71,7 @@ export async function getAccessToken(
 
 export async function refreshAccessToken(refreshToken: string): Promise<{
 	access_token: string;
+	refresh_token: string;
 	token_type: string;
 	expires_in: number;
 	scope: string;
@@ -98,6 +99,7 @@ export async function refreshAccessToken(refreshToken: string): Promise<{
 	console.log("refreshed access token", data);
 	return {
 		access_token: data.access_token,
+		refresh_token: data.refresh_token,
 		token_type: data.token_type,
 		expires_in: data.expires_in,
 		scope: data.scope,
