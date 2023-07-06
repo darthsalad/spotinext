@@ -96,8 +96,9 @@ export default function Home() {
 	});
 
 	const handleClick = async () => {
-		fetch(
+		const response = await fetch(
 			`${server}/song?` +
+			// `http://localhost:8080/song?` +
 				new URLSearchParams({
 					name: String(playingData?.item.name),
 					artist: String(
@@ -116,33 +117,26 @@ export default function Home() {
 					Origin: "*",
 				},
 			}
-		)
-			.then((response) => response.blob())
-			.then((blob) => {
-				const url = window.URL.createObjectURL(new Blob([blob]));
-				const link = document.createElement("a");
-				link.href = url;
-				link.setAttribute(
-					"download",
-					`${downloadName} - ${downloadArtist}.mp3`
-				);
-				document.body.appendChild(link);
-				link.click();
-				link.parentNode!.removeChild(link);
-			})
-			.then(() => {
-				toast({
-					title: "Song Downloaded!",
-					description: "Confirm the download in your browser to save the song.",
-				});
-			})
-			.finally(() => {
-				setDownloadName("");
-				setDownloadArtist("");
-			})
-			.catch((error) => {
-				console.error("Error:", error);
-			});
+		);
+		if (!response.ok) {
+			const error = await response.json();
+			console.log(error);
+			return;
+		}
+		const blob = await response.blob();
+		const url = window.URL.createObjectURL(new Blob([blob]));
+		const link = document.createElement("a");
+		link.href = url;
+		link.setAttribute("download", `${downloadName} - ${downloadArtist}.mp3`);
+		document.body.appendChild(link);
+		link.click();
+		link.parentNode!.removeChild(link);
+		toast({
+			title: "Song Downloaded!",
+			description: "Confirm the download in your browser to save the song.",
+		});
+		setDownloadName("");
+		setDownloadArtist("");
 	};
 
 	return (

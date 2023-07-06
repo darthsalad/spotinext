@@ -63,7 +63,6 @@ def get_song_details():
         )
 
         json_data = res.json()
-        print(json_data)
         video_id = json_data["items"][0]["id"]["videoId"]
 
         ydl_opts = {
@@ -108,8 +107,7 @@ def get_song_details():
                 response = jsonify({"message": "No MP3 File Found..."})
 
     except Exception as e:
-        print("Error", e)
-        return make_response(jsonify({"message": "Something went wrong..."}), 500)
+        return make_response(jsonify({"message": e.__class__.__name__}), 500)
 
 if __name__ == "__main__":
     app.run(debug=True, port=8080, host="0.0.0.0", load_dotenv=True)
