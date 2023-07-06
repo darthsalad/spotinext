@@ -10,6 +10,10 @@ load_dotenv()
 key = os.environ.get("YT_DATA_API")
 
 app = Flask(__name__)
+app.config["CORS_HEADERS"] = "Content-Type"
+app.config["Access-Control-Allow-Origin"] = "*"
+app.config["Access-Control-Allow-Credentials"] = "true"
+
 CORS(
     app, 
     resources={r"/*": {"origins": "*"}}, 
