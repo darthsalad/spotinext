@@ -9,6 +9,23 @@ export const metadata = {
 	title: "Spotinext - A Spotify Song Downloader Platform",
 	description:
 		"Download current playing song from Spotify with Spotinext using Spotinext.",
+	openGraph: {
+		title: "Spotinext - A Spotify Song Downloader Platform",
+		description:
+			"Download current playing song from Spotify with Spotinext using Spotinext.",
+		url: "https://spotinext.vercel.app/",
+		siteName: "Spotinext",
+		image: "/og-banner.png",
+	},
+	twitter: {
+		title: "Spotinext - A Spotify Song Downloader Platform",
+		description:
+			"Download current playing song from Spotify with Spotinext using Spotinext.",
+		image: "/og-banner.png",
+		cardType: "summary_large_image",
+		domain: "https://spotinext.vercel.app/",
+		url: "https://spotinext.vercel.app/",
+	},
 };
 
 export default function RootLayout({
@@ -23,7 +40,7 @@ export default function RootLayout({
 				<QueryWrapper>
 					<ThemeProvider attribute="class" defaultTheme="system" enableSystem>
 						<Navbar />
-						<div>
+						<div className="pb-[100px]">
 							{children}
 						</div>
 						<Toaster />
