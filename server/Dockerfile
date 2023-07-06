@@ -14,4 +14,5 @@ EXPOSE 8080
 
 ENV YT_DATA_API=AIzaSyAx4A4EgwdbBWmTlwdR7UIVcj6ms8GnoUY
 
-CMD ["flask", "run", "--host", "0.0.0.0", "--port", "8080", "--debug"]
+# CMD ["flask", "run", "--host", "0.0.0.0", "--port", "8080", "--debug"]
+CMD ["python3", "./app.py"]
