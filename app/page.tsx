@@ -135,6 +135,8 @@ export default function Home() {
 					title: "Song Downloaded!",
 					description: "Confirm the download in your browser to save the song.",
 				});
+			})
+			.finally(() => {
 				setDownloadName("");
 				setDownloadArtist("");
 			})
@@ -233,7 +235,6 @@ export default function Home() {
 											<Button
 												className="w-full mt-5 rounded-full bg-green-600 flex items-center"
 												onClick={() => {
-													handleClick();
 													setDownloadName(playingData?.item.name);
 													setDownloadArtist(
 														playingData?.item.artists
@@ -242,6 +243,7 @@ export default function Home() {
 															})
 															.join(", ")
 													);
+													handleClick();
 												}}
 											>
 												<Download size={18} className="mr-2" /> Download Audio

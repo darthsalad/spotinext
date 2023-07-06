@@ -5,7 +5,7 @@ import urllib.parse
 import yt_dlp as youtube_dl
 from dotenv import load_dotenv
 from flask_cors import CORS
-from flask import Flask, jsonify, request, after_this_request, make_response
+from flask import Flask, jsonify, request, after_this_request, make_response, send_file
 
 load_dotenv()
 key = os.environ.get("YT_DATA_API")
@@ -85,9 +85,10 @@ def get_song_details():
 
         for file in os.listdir():
             if file.endswith(".mp3"):
-                file_data = codecs.open(file, "rb").read()
-                response = make_response()
-                response.data = file_data
+                response = send_file(file, as_attachment=True)
+                # file_data = codecs.open(file, "rb").read()
+                # response = make_response()
+                # response.data = file_data
                 @after_this_request
                 def end_action(response):
                     @response.call_on_close
