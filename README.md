@@ -74,12 +74,6 @@ function generateCodeVerifier(length: number) {
 generateCodeVerifier(128);
 ```
 
-- For the server directory, add an `.env` file with a single variable (Generate it from the [Google Developer Console](https://console.developers.google.com/):
-```bash
-# .env in /server
-YT_DATA_API=your_youtube_data_api_key
-```
-
 ## Running the app
 
 ### Server
@@ -107,4 +101,27 @@ yarn start
 npm run build
 npm start
 ```
+### Docker (Server)
+- `cd` into the root directory of the repo and run the following command:
 
+```bash
+docker build -t spotinext .
+
+docker run -p 5000:5000 spotinext
+```
+
+## Contributing
+
+#### Contributions are always welcome!
+
+You can contribute to add new features from the README `TO-DO` section or by fixing bugs and issues.
+
+You can request for new features by adding Issues with the `feature` tag.
+
+## License
+
+[MIT](https://choosealicense.com/licenses/mit/)
+
+## Author
+
+- [Piyush Mishra](https://github.com/DarthSalad)
