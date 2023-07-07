@@ -1,6 +1,4 @@
 import os
-import codecs
-import requests
 import urllib.parse
 import yt_dlp as youtube_dl
 from dotenv import load_dotenv
@@ -50,29 +48,16 @@ def get_song_details():
     try:
         song_name = request.args.get("name")
         artist = request.args.get("artist")
-        url = "https://www.googleapis.com/youtube/v3/search"
-        res = requests.get(
-            url,
-            params={
-                "part": "snippet",
-                "q": f"{song_name} {urllib.parse.unquote_plus(str(artist))} Official Audio",
-                "key": key,
-                "type": "video",
-                "maxResults": 1,
-            },
-        )
-
-        json_data = res.json()
-        video_id = json_data["items"][0]["id"]["videoId"]
-
+        query = f"{song_name} {urllib.parse.unquote_plus(str(artist))} Official Audio"
+        file_name = f"{song_name} - {artist} (Official Audio)"
         ydl_opts = {
             "format": "bestaudio/best",
-            "outtmpl": "%(title)s.%(ext)s",
+            "outtmpl": file_name + ".%(ext)s",
             "postprocessors": [
                 {
                     "key": "FFmpegExtractAudio",
                     "preferredcodec": "mp3",
-                    "preferredquality": "192",
+                    "preferredquality": "320",
                 }
             ],
             "logger": MyLogger(),
@@ -80,34 +65,37 @@ def get_song_details():
         }
 
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-            ydl.download([f"https://www.youtube.com/watch?v={video_id}"])
+            ydl.extract_info(f"ytsearch:{query}", download=True)
 
         for file in os.listdir():
             if file.endswith(".mp3"):
                 response = send_file(file, as_attachment=True)
-                # file_data = codecs.open(file, "rb").read()
-                # response = make_response()
-                # response.data = file_data
                 @after_this_request
                 def end_action(response):
-                    @response.call_on_close
-                    def cleanup():
-                        try:
-                            os.remove(file)
-                            print("Deleted temp file.", file)
-                        except Exception as e:
-                            print(e)
                     response.headers["Access-Control-Allow-Origin"] = "*"
                     response.headers["Access-Control-Allow-Credentials"] = "true"
                     return response
                 response.headers["Access-Control-Allow-Origin"] = "*"
                 response.headers["Access-Control-Allow-Credentials"] = "true"
+                response.headers["Access-Control-Expose-Headers"] = "Content-Disposition"
                 return response, 200
             else:
                 response = jsonify({"message": "No MP3 File Found..."})
 
     except Exception as e:
         return make_response(jsonify({"message": e.__class__.__name__}), 500)
+    
+@app.route("/cleanup", methods=["GET", "OPTIONS"])
+def cleanup():
+    try:
+        for file in os.listdir():
+            if file.endswith(".mp3") or file.endswith(".webm"):
+                os.remove(file)
+        return make_response(jsonify({"message": "Cleanup Successful"}), 200)
+    except Exception as e:
+        print(e)
+        return make_response(jsonify({"message": e.__class__.__name__}), 500)
+        
 
 if __name__ == "__main__":
     app.run(debug=True, port=8080, host="0.0.0.0", load_dotenv=True)

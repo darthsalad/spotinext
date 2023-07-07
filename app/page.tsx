@@ -23,8 +23,6 @@ export default function Home() {
 	const router = useRouter();
 	const { toast } = useToast();
 	const server = process.env.NEXT_PUBLIC_SERVER_URL!;
-	const [downloadName, setDownloadName] = useState<string>("");
-	const [downloadArtist, setDownloadArtist] = useState<string>("");
 
 	const {
 		data: playingData,
@@ -42,7 +40,11 @@ export default function Home() {
 			});
 			if (!res.ok) {
 				const error = await res.json();
-				console.log(error);
+				toast({
+					variant: "destructive",
+					title: "Something went wrong!",
+					description: JSON.stringify(error),
+				});
 				return;
 			}
 			const data = await res.json();
@@ -95,19 +97,42 @@ export default function Home() {
 		refetchOnWindowFocus: true,
 	});
 
-	const handleClick = async () => {
-		const response = await fetch(
+	const cleanup = () => {
+		fetch(`${server}/cleanup`, {
+		// fetch(`http://localhost:8080/cleanup`, {
+			method: "GET",
+			headers: {
+				"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+				Accept: "*/*",
+				Origin: "*",
+			},
+		})
+			.then((res) => {
+				if (!res.ok) {
+					toast({
+						variant: "destructive",
+						title: "Something went wrong!",
+						description: "Failed to cleanup.",
+					});
+					return;
+				}
+				return res.json();
+			})
+			.then((data) => {
+				console.log(data);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	};
+
+	const handleClick = async (name: string, artist: string) => {
+		const res = await fetch(
 			`${server}/song?` +
 			// `http://localhost:8080/song?` +
 				new URLSearchParams({
-					name: String(playingData?.item.name),
-					artist: String(
-						playingData?.item.artists
-							.map((artist) => {
-								return artist.name;
-							})
-							.join(", ")
-					),
+					name: name,
+					artist: artist,
 				}),
 			{
 				method: "GET",
@@ -118,25 +143,34 @@ export default function Home() {
 				},
 			}
 		);
-		if (!response.ok) {
-			const error = await response.json();
-			console.log(error);
+
+		if (!res.ok) {
+			console.log(res);
 			return;
 		}
-		const blob = await response.blob();
-		const url = window.URL.createObjectURL(new Blob([blob]));
+
+		const fileName = res.headers.get("content-disposition");
+		const trimmedName = fileName?.split("filename=")[1];
+		const finalFileName = trimmedName?.substring(
+			1,
+			trimmedName.length - 5
+		);
+
+		const blob = await res.blob();
+		const url = window.URL.createObjectURL(new Blob([blob!]));
 		const link = document.createElement("a");
 		link.href = url;
-		link.setAttribute("download", `${downloadName} - ${downloadArtist}.mp3`);
+		link.setAttribute("download", `${finalFileName}.mp3`);
 		document.body.appendChild(link);
 		link.click();
 		link.parentNode!.removeChild(link);
+
 		toast({
 			title: "Song Downloaded!",
 			description: "Confirm the download in your browser to save the song.",
 		});
-		setDownloadName("");
-		setDownloadArtist("");
+
+		cleanup();
 	};
 
 	return (
@@ -229,15 +263,14 @@ export default function Home() {
 											<Button
 												className="w-full mt-5 rounded-full bg-green-600 flex items-center"
 												onClick={() => {
-													setDownloadName(playingData?.item.name);
-													setDownloadArtist(
+													handleClick(
+														playingData?.item.name,
 														playingData?.item.artists
 															.map((artist) => {
 																return artist.name;
 															})
 															.join(", ")
 													);
-													handleClick();
 												}}
 											>
 												<Download size={18} className="mr-2" /> Download Audio
