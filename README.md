@@ -14,6 +14,9 @@ An easy-to-use Spotify music downloader web app and PWA built with `Next.js` and
 - [x] Deleting the temporary files(mp3) from the server
 - [x] Logout function - server actions
 - [x] Middleware for refresh_token & access_token
+- [ ] Add audio metadata
+	- [ ] Album Art
+ 	- [ ] Song name, Artist name, Album name, Disc Number, #, Contributing Artist, Length 	
 
 ## Installation
 
