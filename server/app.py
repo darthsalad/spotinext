@@ -1,12 +1,8 @@
 import os
 import urllib.parse
 import yt_dlp as youtube_dl
-from dotenv import load_dotenv
 from flask_cors import CORS
 from flask import Flask, jsonify, request, after_this_request, make_response, send_file
-
-load_dotenv()
-key = os.environ.get("YT_DATA_API")
 
 app = Flask(__name__)
 CORS(

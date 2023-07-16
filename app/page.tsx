@@ -1,5 +1,6 @@
 "use client";
 
+import FeatureChart from "@/components/song-chart";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,12 +13,12 @@ import {
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/components/ui/use-toast";
+import { SongFeatures, pitch } from "@/types/song-features";
 import { SpotifyPlaying } from "@/types/spotify-playing";
 import { useQuery } from "@tanstack/react-query";
 import { Disc3, Download } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 
 export default function Home() {
 	const router = useRouter();
@@ -89,6 +90,7 @@ export default function Home() {
 					name: data.item.name,
 					type: data.item.type,
 					uri: data.item.uri,
+					id: data.item.id,
 				},
 				progress_ms: data.progress_ms,
 			};
@@ -97,9 +99,56 @@ export default function Home() {
 		refetchOnWindowFocus: true,
 	});
 
+	const {
+		data: songData,
+		isLoading: songLoading,
+		error: songError,
+	} = useQuery<SongFeatures | undefined>({
+		queryKey: ["song"],
+		queryFn: async (): Promise<SongFeatures | undefined> => {
+			const res = await fetch("/api/features", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				credentials: "include",
+				body: JSON.stringify({
+					id: playingData?.item.id,
+				}),
+			});
+			if (!res.ok) {
+				const data = await res.json();
+				toast({
+					variant: "destructive",
+					title: "Something went wrong!",
+					description: "Failed to fetch song details: " + JSON.stringify(data.error.message).substring(1, JSON.stringify(data.error.message).length - 1),
+				});
+				return;
+			}
+			const data = await res.json();
+			console.log(data);
+			return {
+				acousticness: data.acousticness,
+				danceability: data.danceability,
+				energy: data.energy,
+				instrumentalness: data.instrumentalness,
+				key: data.key,
+				liveness: data.liveness,
+				loudness: data.loudness,
+				modality: data.mode,
+				speechiness: data.speechiness,
+				tempo: data.tempo,
+				time_signature: data.time_signature,
+				valence: data.valence,
+			};
+		},
+		refetchInterval: 10000,
+		refetchOnWindowFocus: true,
+	});
+
 	const cleanup = () => {
 		fetch(`${server}/cleanup`, {
-		// fetch(`http://localhost:8080/cleanup`, {
+			// fetch(`http://localhost:8080/cleanup`, {
 			method: "GET",
 			headers: {
 				"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
@@ -129,7 +178,7 @@ export default function Home() {
 	const handleClick = async (name: string, artist: string) => {
 		const res = await fetch(
 			`${server}/song?` +
-			// `http://localhost:8080/song?` +
+				// `http://localhost:8080/song?` +
 				new URLSearchParams({
 					name: name,
 					artist: artist,
@@ -151,10 +200,7 @@ export default function Home() {
 
 		const fileName = res.headers.get("content-disposition");
 		const trimmedName = fileName?.split("filename=")[1];
-		const finalFileName = trimmedName?.substring(
-			1,
-			trimmedName.length - 5
-		);
+		const finalFileName = trimmedName?.substring(1, trimmedName.length - 5);
 
 		const blob = await res.blob();
 		const url = window.URL.createObjectURL(new Blob([blob!]));
@@ -176,7 +222,7 @@ export default function Home() {
 	return (
 		<main>
 			<div className="w-full inline-flex justify-center grow mx-auto px-10 py-5">
-				<Card className="max-w-[500px] sm:w-[600px]">
+				<Card className="max-w-[600px] sm:w-[600px]">
 					<CardHeader>
 						<CardTitle>Currently Playing Track</CardTitle>
 						<CardDescription>
@@ -278,6 +324,23 @@ export default function Home() {
 										</div>
 									</>
 								)}
+							</div>
+							<div>
+								{!playingData?.is_playing ? null : songLoading ? (
+									<div>Loading...</div>
+								) : songData !== undefined ? (
+										<div className="flex flex-col w-full py-5 sm:flex-row">
+											<div className="mx-5 sm:pr-5"> 
+												<FeatureChart features={songData} />
+											</div>
+											<div className="grid grid-cols-2 gap-3 content-evenly sm:grid-cols-2">
+												<div className="text-center mt-5">Pitch <br /><span className="text-muted-foreground"> {pitch.get(songData?.key)}</span></div>
+												<div className="text-center mt-5">Tempo <br /><span className="text-muted-foreground"> {songData?.tempo}</span></div>
+												<div className="text-center mt-5">Modality <br /><span className="text-muted-foreground"> {songData?.modality === 1 ? "Major" : "Minor"}</span></div>
+												<div className="text-center mt-5">Time Signature <br /><span className="text-muted-foreground"> {songData?.time_signature}/4</span></div>
+											</div>
+										</div>
+								) : null}
 							</div>
 						</CardContent>
 					</CardHeader>

@@ -25,6 +25,7 @@ export type SpotifyPlaying = {
     external_urls: {
       spotify: string;
     };
+    id: string;
     explicit: boolean;
     name: string;
     type: string;
