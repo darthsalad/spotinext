@@ -1,0 +1,38 @@
+{
+	"name": "Spotinext - A Spotify Song Downloader Platform",
+	"short_name": "Spotinext",
+	"description": "Download current playing song from Spotify with Spotinext.",
+	"icons": [
+		{
+			"src": "/icon-192x192.png",
+			"sizes": "192x192",
+			"type": "image/png"
+		},
+		{
+			"src": "/icon-256x256.png",
+			"sizes": "256x256",
+			"type": "image/png"
+		},
+		{
+			"src": "/icon-384x384.png",
+			"sizes": "384x384",
+			"type": "image/png"
+		},
+		{
+			"src": "/icon-512x512.png",
+			"sizes": "512x512",
+			"type": "image/png"
+		},
+		{
+			"src": "/maskable_icon.png",
+			"sizes": "1024x1024",
+			"type": "image/png",
+			"purpose": "maskable"
+		}
+	],
+	"start_url": "/",
+	"background_color": "#0c0a09",
+	"theme_color": "#0c0a09",
+	"display": "standalone",
+	"orientation": "portrait"
+}

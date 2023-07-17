@@ -127,7 +127,6 @@ export default function Home() {
 					return;
 				}
 				const data = await res.json();
-				console.log(data);
 				return {
 					acousticness: data.acousticness,
 					danceability: data.danceability,

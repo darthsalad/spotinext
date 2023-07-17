@@ -7,12 +7,10 @@ import { ThemeProvider } from "@/components/theme-provider";
 
 export const metadata = {
 	title: "Spotinext - A Spotify Song Downloader Platform",
-	description:
-		"Download current playing song from Spotify with Spotinext.",
+	description: "Download current playing song from Spotify with Spotinext.",
 	openGraph: {
 		title: "Spotinext - A Spotify Song Downloader Platform",
-		description:
-			"Download current playing song from Spotify with Spotinext.",
+		description: "Download current playing song from Spotify with Spotinext.",
 		url: "https://spotinext.vercel.app/",
 		siteName: "Spotinext",
 		images: [
@@ -26,8 +24,7 @@ export const metadata = {
 	},
 	twitter: {
 		title: "Spotinext - A Spotify Song Downloader Platform",
-		description:
-			"Download current playing song from Spotify with Spotinext.",
+		description: "Download current playing song from Spotify with Spotinext.",
 		images: [
 			{
 				url: "/og-banner.png",
@@ -40,6 +37,9 @@ export const metadata = {
 		domain: "https://spotinext.vercel.app/",
 		url: "https://spotinext.vercel.app/",
 	},
+	appleTouchIcon: "/icon.png",
+	manifest: "/manifest.json",
+	themeColor: "#0c0a09",
 };
 
 export default function RootLayout({
@@ -50,13 +50,17 @@ export default function RootLayout({
 
 	return (
 		<html lang="en">
+			<head>
+				<meta
+					name="viewport"
+					content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, user-scalable=no, viewport-fit=cover"
+				/>
+			</head>
 			<body className="relative min-h-screen">
 				<QueryWrapper>
 					<ThemeProvider attribute="class" defaultTheme="system" enableSystem>
 						<Navbar />
-						<div className="pb-[100px]">
-							{children}
-						</div>
+						<div className="pb-[100px]">{children}</div>
 						<Toaster />
 						<Footer />
 					</ThemeProvider>
