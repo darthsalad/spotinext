@@ -82,10 +82,10 @@ const Account = () => {
 											}
 											alt={profileData?.display_name || "no profile image"}
 											className="w-32 h-32 rounded-full"
-											/>
-											<AvatarFallback>
-												<User className="w-32 h-32 rounded-full" />
-											</AvatarFallback>
+										/>
+										<AvatarFallback>
+											<User className="w-32 h-32 rounded-full" />
+										</AvatarFallback>
 									</Avatar>
 									<h2 className="mt-2 text-xl text-muted-foreground">
 										{profileData?.id}
@@ -110,7 +110,7 @@ const Account = () => {
 											target="_blank"
 											rel="noopener noreferrer"
 										>
-											<Button className="w-full bg-green-600 rounded-full text-semibold text-black items-center">
+											<Button className="w-full bg-green-600 rounded-full text-semibold text-white items-center dark:text-black">
 												<ExternalLink size={18} className="mr-2" />
 												Spotify Profile
 											</Button>

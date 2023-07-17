@@ -8,10 +8,11 @@ import {
 	Tooltip,
 	Legend,
 } from "chart.js";
+import { useTheme } from 'next-themes';
 import { Radar } from 'react-chartjs-2'
 
 interface ChartProps {
-  features: SongFeatures
+	features?: SongFeatures
 }
 
 ChartJS.register(
@@ -24,16 +25,30 @@ ChartJS.register(
 );
 
 const FeatureChart = (props: ChartProps) => {
-  const { features } = props
-  const normalizedFeatures = {
-    Acousticness: features.acousticness * 100,
-    Danceability: features.danceability * 100,
-    Energy: features.energy * 100,
-    Instrumentalness: features.instrumentalness * 100,
-    Liveness: features.liveness * 100,
-    Valence: features.valence * 100,
-    Speechiness: features.speechiness * 100,
-  }
+	const theme = useTheme();
+	const { features } = props
+	const normalizedFeatures = {};
+	if (!features) {
+		Object.assign(normalizedFeatures, {
+			Acousticness: 0,
+			Danceability: 0,
+			Energy: 0,
+			Instrumentalness: 0,
+			Liveness: 0,
+			Valence: 0,
+			Speechiness: 0,
+		});
+	} else {
+		Object.assign(normalizedFeatures, {
+			Acousticness: features.acousticness * 100,
+			Danceability: features.danceability * 100,
+			Energy: features.energy * 100,
+			Instrumentalness: features.instrumentalness * 100,
+			Liveness: features.liveness * 100,
+			Valence: features.valence * 100,
+			Speechiness: features.speechiness * 100,
+		}); 
+	}
   return (
 		<div>
 			<Radar
@@ -57,21 +72,21 @@ const FeatureChart = (props: ChartProps) => {
 					responsive: true,
 					plugins: {
 						legend: {
-              display: false
+							display: false,
 						},
 						tooltip: {
 							callbacks: {
 								label: (context) => {
 									return context.label + ": " + context.formattedValue + "%";
 								},
-              },
-              backgroundColor: "rgba(0, 0, 0, 0.5)",
-              bodyFont: {
-                size: 13
-              },
-              titleFont: {
-                size: 15
-              },
+							},
+							backgroundColor: "rgba(0, 0, 0, 0.5)",
+							bodyFont: {
+								size: 13,
+							},
+							titleFont: {
+								size: 15,
+							},
 						},
 					},
 					scales: {
@@ -83,13 +98,18 @@ const FeatureChart = (props: ChartProps) => {
 								color: "rgba(22, 163, 74, 0.35)",
 							},
 							ticks: {
-								color: "rgba(255, 255, 255, 0.5)",
+								color:
+									theme.theme === "dark"
+										? "rgba(255, 255, 255, 0.5)"
+										: "rgba(0, 0, 0, 0.5)",
 								backdropColor: "rgba(22, 163, 74, 0)",
 							},
 							pointLabels: {
-								color: "rgba(255, 255, 255, 0.5)",
-              },
-              
+								color:
+									theme.theme === "dark"
+										? "rgba(255, 255, 255, 0.5)"
+										: "rgba(0, 0, 0, 0.5)",
+							},
 						},
 					},
 				}}

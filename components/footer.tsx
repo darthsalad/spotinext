@@ -11,7 +11,7 @@ const Footer = () => {
 				<h2 className="text-2xl font-semibold">
 					Spotinext
 					<span className="text-lg text-muted-foreground font-mono ml-1">
-						v1.3
+						v1.4
 					</span>
 				</h2>
 				<div className="flex flex-col items-center sm:flex-row">
