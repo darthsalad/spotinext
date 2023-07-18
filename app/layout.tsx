@@ -37,7 +37,7 @@ export const metadata = {
 		domain: "https://spotinext.vercel.app/",
 		url: "https://spotinext.vercel.app/",
 	},
-	appleTouchIcon: "/icon.png",
+	appleTouchIcon: "/icon-512x512.png",
 	manifest: "/manifest.json",
 	themeColor: "#0c0a09",
 };
