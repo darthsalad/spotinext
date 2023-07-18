@@ -82,3 +82,27 @@ html, body {
   padding: 0;
   border: none;
 }
+
+#card-text {
+  transform: translateY(100%);
+  transition: transform 0.3s ease-in-out;
+  background: linear-gradient(0deg, rgba(2,0,36,1) 0%, rgba(0,0,0,0.768032212885154) 41%, rgba(242,242,242,0) 100%);
+}
+
+#card:hover  #card-text {
+  transform: translateY(0);
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+  background: transparent; 
+}
+
+::-webkit-scrollbar-track {
+  background: transparent; 
+}
+
+::-webkit-scrollbar-thumb {
+  background: #00db4d;
+  border-radius: 10px;
+}

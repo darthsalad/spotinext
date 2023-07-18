@@ -65,6 +65,7 @@ const Navbar = () => {
 			});
 		}
 		const data = await res.json();
+		router.push("/");
 		toast({
 			title: data.message,
 		})

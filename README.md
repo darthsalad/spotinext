@@ -19,7 +19,7 @@ An easy-to-use Spotify music downloader web app and PWA built with `Next.js` and
  	- [ ] Song name, Artist name, Album name, Disc Number, #, Contributing Artist, Length
 - [x] Audio features - Graphs
 - [ ] Recommendations based on features of current playing songs (list of URI's)
-- [ ] Top tracks(5) and artists(5) in profile page (/account)
+- [x] Top tracks(6) and artists(6) in profile page (/account)
 - [x] PWA conversion
 
 ## Installation

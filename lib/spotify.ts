@@ -24,6 +24,7 @@ export async function redirectToAuthCodeFlow(clientId: string) {
 		"playlist-read-collaborative",
 		"playlist-modify-public",
 		"playlist-modify-private",
+		"user-top-read",
 	];
 	const state = "spotify_auth_state";
 	const url = `https://accounts.spotify.com/authorize?response_type=code&client_id=${clientId}&scope=${encodeURIComponent(
