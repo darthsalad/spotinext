@@ -59,12 +59,12 @@ const FeatureChart = (props: ChartProps) => {
 						{
 							label: "Song Features",
 							data: Object.values(normalizedFeatures),
-							backgroundColor: "rgba(22, 163, 74, 0.2)",
-							borderColor: "rgb(22, 163, 74)",
-							pointBackgroundColor: "rgb(22, 163, 74)",
+							backgroundColor: "rgba(0, 219, 77, 0.2)",
+							borderColor: "rgb(0, 219, 77)",
+							pointBackgroundColor: "rgb(0, 219, 77)",
 							pointBorderColor: "#fff",
 							pointHoverBackgroundColor: "#fff",
-							pointHoverBorderColor: "rgb(22, 163, 74)",
+							pointHoverBorderColor: "rgb(0, 219, 77)",
 						},
 					],
 				}}

@@ -1,5 +1,5 @@
 {
-	"name": "Spotinext - A Spotify Song Downloader Platform",
+	"name": "Spotinext",
 	"short_name": "Spotinext",
 	"description": "Download current playing song from Spotify with Spotinext.",
 	"icons": [
@@ -25,7 +25,7 @@
 		},
 		{
 			"src": "/maskable_icon.png",
-			"sizes": "1024x1024",
+			"sizes": "512x512",
 			"type": "image/png",
 			"purpose": "maskable"
 		}

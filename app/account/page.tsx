@@ -57,7 +57,7 @@ const Account = () => {
 				<CardHeader>
 					<CardTitle>Account Details</CardTitle>
 					<CardDescription>
-						Spotify Account <span className="text-green-600">Connected</span>
+						Spotify Account <span className="text-[#00db4d]">Connected</span>
 					</CardDescription>
 					<CardContent className="p-0">
 						<div className="m-2 p-5 border rounded-lg flex flex-col items-center">
@@ -100,7 +100,7 @@ const Account = () => {
 										Country: {countryName(profileData?.country || "")}
 									</p>
 									<div className="flex items-center border-2 rounded-lg p-3 mt-5">
-										<User size={20} className="mr-2 text-green-600" />
+										<User size={20} className="mr-2 text-[#00db4d]" />
 										{profileData?.followers.total}
 										<span className="ml-2">Followers</span>
 									</div>
@@ -110,7 +110,7 @@ const Account = () => {
 											target="_blank"
 											rel="noopener noreferrer"
 										>
-											<Button className="w-full bg-green-600 rounded-full text-semibold text-white items-center dark:text-black">
+											<Button className="w-full bg-[#00db4d] rounded-full text-semibold text-white items-center dark:text-black">
 												<ExternalLink size={18} className="mr-2" />
 												Spotify Profile
 											</Button>

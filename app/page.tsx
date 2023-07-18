@@ -235,7 +235,7 @@ export default function Home() {
 					<CardHeader>
 						<CardTitle>Currently Playing Track</CardTitle>
 						<CardDescription>
-							<span className="text-green-600">Playing Spotify Track</span>
+							<span className="text-[#00db4d]">Playing Spotify Track</span>
 						</CardDescription>
 						<CardContent className="p-0 py-5">
 							<div className="flex flex-row w-full grow">
@@ -312,6 +312,7 @@ export default function Home() {
 												{playingData?.item.album.name}
 											</h1>
 											<Progress
+												aria-label="Song Progress"
 												className="w-full mt-2 h-2 bg-muted"
 												value={
 													(playingData?.progress_ms! /
@@ -330,7 +331,7 @@ export default function Home() {
 												</span>
 											</div>
 											<Button
-												className="w-full mt-5 rounded-full bg-green-600 flex items-center"
+												className="w-full mt-5 rounded-full bg-[#00db4d] flex items-center"
 												onClick={() => {
 													handleClick(
 														playingData?.item.name,
