@@ -18,9 +18,9 @@ const Footer = () => {
 					<h5>
 						Built by{" "}
 						<Link
-							href="https://github.com/DarthSalad"
+							href="https://twitter.com/_darthsalad_"
 							target="_blank"
-							rel="noopener"
+							rel="noopener noreferrer"
 							className="underline"
 						>
 							darthsalad
@@ -30,7 +30,7 @@ const Footer = () => {
 						<Link
 							href="https://github.com/DarthSalad"
 							target="_blank"
-							rel="noopener"
+							rel="noopener noreferrer"
 						>
 							<Github
 								className="bg-secondary rounded-lg p-0.5 mr-5 sm:ml-5"
@@ -40,7 +40,7 @@ const Footer = () => {
 						<Link
 							href="mailto:piyushmishra965@gmail.com"
 							target="_blank"
-							rel="noopener"
+							rel="noopener noreferrer"
 						>
 							<AtSign className="bg-secondary rounded-lg p-0.5" size={25} />
 						</Link>

@@ -4,6 +4,7 @@ import Footer from "@/components/footer";
 import { Toaster } from "@/components/ui/toaster";
 import QueryWrapper from "@/components/query-provider";
 import { ThemeProvider } from "@/components/theme-provider";
+import { Analytics } from '@vercel/analytics/react';
 
 export const metadata = {
 	title: "Spotinext - A Spotify Song Downloader Platform",
@@ -60,7 +61,10 @@ export default function RootLayout({
 				<QueryWrapper>
 					<ThemeProvider attribute="class" defaultTheme="system" enableSystem>
 						<Navbar />
-						<div className="pb-[100px]">{children}</div>
+						<div className="pb-[100px]">
+							{children}
+							<Analytics />
+						</div>
 						<Toaster />
 						<Footer />
 					</ThemeProvider>

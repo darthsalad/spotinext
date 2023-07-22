@@ -306,11 +306,11 @@ const Account = () => {
 													target="_blank"
 													rel="noopener noreferrer"
 												>
-													<h2 className="font-semibold text-sm text-white pl-2">
+													<h2 className="font-semibold text-sm pl-2 text-white">
 														{artist.name}
 													</h2>
 												</Link>
-												<p className="text-xs pl-2 pb-2">
+												<p className="text-xs pl-2 pb-2 text-[#f7f7f6]">
 													{artist.genres.join(", ")}
 												</p>
 											</div>
