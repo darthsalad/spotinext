@@ -318,7 +318,7 @@ const Account = () => {
 									))}
 								</div>
 							</div>
-							<div className="my-10 md:my-0 md:ml-10">
+							<div className="my-10 md:pb-5 md:my-0 md:ml-10 md:w-[350px]">
 								<h2 className="font-semibold text-2xl">Top Tracks</h2>
 								<h4 className="font-semibold text-sm text-[#00db4d] mb-5">
 									Keep that song repeating over

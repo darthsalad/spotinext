@@ -2,39 +2,41 @@ import { NextRequest, NextResponse } from "next/server";
 import { getAccessToken, refreshAccessToken } from "./lib/spotify";
 
 export async function middleware(req: NextRequest) {
-	if (!req.cookies.get("access_token") && req.cookies.get("refresh_token")) {
-		const tokens = await refreshAccessToken(
-			req.cookies.get("refresh_token")!.value
-		);
-		if (tokens) {
-			const now = new Date();
-			const codeCookie = req.cookies.get("code");
-			const response = NextResponse.next();
-			response.cookies.set("access_token", tokens.access_token, {
-				httpOnly: true,
-				sameSite: "strict",
-				path: "/",
-				expires: new Date(now.getTime() + tokens.expires_in * 1000),
-			});
-			response.cookies.set("refresh_token", tokens.refresh_token, {
-				httpOnly: true,
-				sameSite: "strict",
-				path: "/",
-				expires: new Date(now.getTime() + 10 * 24 * 60 * 60 * 1000),
-			});
-			response.cookies.set("code", codeCookie?.value!, {
-				httpOnly: true,
-				sameSite: "strict",
-				path: "/",
-				expires: new Date(now.getTime() + 10 * 24 * 60 * 60 * 1000),
-			});
-			return response;
-		} else {
-			const response = NextResponse.redirect(new URL("/auth/login", req.url));
-			response.cookies.delete("access_token");
-			response.cookies.delete("refresh_token");
-			response.cookies.delete("code");
-			return response;
+	if (req.nextUrl.pathname.startsWith("/")) {
+		if (!req.cookies.get("access_token") && req.cookies.get("refresh_token")) {
+			const tokens = await refreshAccessToken(
+				req.cookies.get("refresh_token")!.value
+			);
+			if (tokens) {
+				const now = new Date();
+				const codeCookie = req.cookies.get("code");
+				const response = NextResponse.next();
+				response.cookies.set("access_token", tokens.access_token, {
+					httpOnly: true,
+					sameSite: "strict",
+					path: "/",
+					expires: new Date(now.getTime() + tokens.expires_in * 1000),
+				});
+				response.cookies.set("refresh_token", tokens.refresh_token, {
+					httpOnly: true,
+					sameSite: "strict",
+					path: "/",
+					expires: new Date(now.getTime() + 10 * 24 * 60 * 60 * 1000),
+				});
+				response.cookies.set("code", codeCookie?.value!, {
+					httpOnly: true,
+					sameSite: "strict",
+					path: "/",
+					expires: new Date(now.getTime() + 10 * 24 * 60 * 60 * 1000),
+				});
+				return response;
+			} else {
+				const response = NextResponse.redirect(new URL("/auth/login", req.url));
+				response.cookies.delete("access_token");
+				response.cookies.delete("refresh_token");
+				response.cookies.delete("code");
+				return response;
+			}
 		}
 	}
 

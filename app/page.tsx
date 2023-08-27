@@ -276,7 +276,7 @@ export default function Home() {
 														<a
 															key={index}
 															className=""
-															href={artist.uri}
+															href={artist.external_urls.spotify}
 															target="_blank"
 															rel="noopener noreferrer"
 														>
