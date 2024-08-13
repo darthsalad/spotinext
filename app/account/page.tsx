@@ -300,7 +300,7 @@ const Account = () => {
 											className="flex rounded-md justify-center items-end w-28 h-28 bg-cover cursor-pointer overflow-y-hidden"
 											id="card"
 										>
-											<div id="card-text">
+											<div id="card-text" className="w-full">
 												<Link
 													href={artist.external_urls.spotify}
 													target="_blank"
@@ -336,7 +336,7 @@ const Account = () => {
 												target="_blank"
 												rel="noopener noreferrer"
 											>
-												<h2 className="font-semibold text-lg">{track.name}</h2>
+												<h2 className="font-semibold text-lg hover:text-[#00db4d]">{track.name}</h2>
 											</Link>
 											<p className="text-sm text-muted-foreground">
 												{track.artists.map((artist, idx) => (
