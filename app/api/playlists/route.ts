@@ -36,7 +36,10 @@ export async function GET(req: Request) {
 		tokenValue = tokens.access_token;
 	}
 
-	const res = await fetch("https://api.spotify.com/v1/me/player/currently-playing", {
+	const { searchParams } = new URL(req.url);
+	const offset = parseInt(searchParams.get("offset") ?? "0");
+
+	const res = await fetch(`https://api.spotify.com/v1/me/playlists?limit=50&offset=${offset}`, {
 		method: "GET",
 		headers: {
 			"Content-Type": "application/json",
@@ -44,25 +47,13 @@ export async function GET(req: Request) {
 		},
 	});
 
-	// 204 = player is idle / paused with no active device
-	if (res.status === 204) {
-		return new Response(JSON.stringify({ is_playing: false }), {
-			status: 200,
-			headers: { "Content-Type": "application/json" },
-		});
-	}
-
-	if (!res.ok) {
-		const data = await res.json();
-		return new Response(JSON.stringify(data), {
-			status: res.status,
-			headers: { "Content-Type": "application/json" },
-		});
-	}
-
 	const data = await res.json();
-	return new Response(JSON.stringify(data), {
-		status: 200,
-		headers: { "Content-Type": "application/json" },
-	});
+	return new Response(
+		JSON.stringify({
+			items: data.items,
+			total: data.total,
+			nextOffset: data.next ? offset + 50 : null,
+		}),
+		{ status: res.ok ? 200 : res.status, headers: { "Content-Type": "application/json" } }
+	);
 }

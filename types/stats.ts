@@ -6,7 +6,10 @@ export type TopArtists = {
   external_urls: {
     spotify: string;
   };
-  images: string[];
+  images: {
+    url: string;
+    height: number;
+  }[];
 }
 
 export type TopTracks = {
@@ -23,7 +26,10 @@ export type TopTracks = {
       name: string;
       uri: string;
     }[];
-    images: string[];
+    images: {
+      url: string;
+      height: number;
+    }[];
   };
   artists: {
     name: string;
@@ -32,5 +38,4 @@ export type TopTracks = {
       spotify: string;
     };
   }[];
-
 }
