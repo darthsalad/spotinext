@@ -1,14 +1,19 @@
-FROM python:3.8.5-slim-buster
+FROM python:3.11-slim
 
 WORKDIR /app
 
-COPY . .
+RUN apt-get update && \
+  apt-get install -y --no-install-recommends ffmpeg && \
+  rm -rf /var/lib/apt/lists/*
+
+COPY requirements.txt .
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-RUN apt-get update && \
-  apt-get install -y ffmpeg && \
-  rm -rf /var/lib/apt/lists/*
+COPY . .
+
+RUN useradd -m appuser && chown -R appuser /app
+USER appuser
 
 EXPOSE 8080
 
