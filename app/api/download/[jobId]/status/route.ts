@@ -13,7 +13,13 @@ export async function GET(_req: Request, { params }: { params: { jobId: string }
 		});
 	}
 
-	const data = await res.json();
+	const text = await res.text();
+	let data: unknown;
+	try {
+		data = JSON.parse(text);
+	} catch {
+		data = { message: `Download server error: ${res.status}` };
+	}
 	return new Response(JSON.stringify(data), {
 		status: res.status,
 		headers: { "Content-Type": "application/json" },

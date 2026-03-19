@@ -75,6 +75,7 @@ def download_one(name: str, artist: str, dest_dir: str, job_id: str = "") -> str
             "progress_hooks": [logger.my_hook],
             "quiet": True,
             "no_warnings": True,
+            "extractor_args": {"youtube": {"player_client": ["android", "web"]}},
         }
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
             ydl.extract_info(f"ytsearch:{query}", download=True)
@@ -95,6 +96,24 @@ def download_one(name: str, artist: str, dest_dir: str, job_id: str = "") -> str
         return final_path
     finally:
         shutil.rmtree(track_dir, ignore_errors=True)
+
+
+JOB_TTL = 3600  # seconds before a completed/failed job and its tmpdir are cleaned up
+
+
+def _cleanup_job(job_id: str):
+    with jobs_lock:
+        job = jobs.pop(job_id, None)
+    if job:
+        shutil.rmtree(job["tmpdir"], ignore_errors=True)
+        _log(job_id, "Cleaned up tmpdir")
+
+
+def _schedule_cleanup(job_id: str, delay: int = JOB_TTL):
+    def _run():
+        time.sleep(delay)
+        _cleanup_job(job_id)
+    threading.Thread(target=_run, daemon=True).start()
 
 
 def run_playlist_job(job_id: str, tracks: list):
@@ -135,7 +154,16 @@ def run_playlist_job(job_id: str, tracks: list):
                 + (f"  (failed: {len(failed_list)})" if failed_list else ""),
             )
 
-    _log(job_id, f"⟳  Compressing {done_count - len(failed_list)} tracks …")
+    succeeded = done_count - len(failed_list)
+
+    if succeeded == 0:
+        _log(job_id, "✗  All tracks failed — aborting")
+        with jobs_lock:
+            jobs[job_id]["status"] = "failed"
+        _schedule_cleanup(job_id, delay=0)
+        return
+
+    _log(job_id, f"⟳  Compressing {succeeded} tracks …")
     with jobs_lock:
         jobs[job_id]["status"] = "compressing"
 
@@ -160,6 +188,8 @@ def run_playlist_job(job_id: str, tracks: list):
     with jobs_lock:
         jobs[job_id]["status"] = "complete"
         jobs[job_id]["archive_path"] = archive_path
+
+    _schedule_cleanup(job_id)
 
 
 @app.route("/", methods=["GET"])
