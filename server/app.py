@@ -23,6 +23,7 @@ from flask import (
 
 
 app = Flask(__name__)
+app.url_map.strict_slashes = False
 CORS(
     app,
     resources={
@@ -312,4 +313,5 @@ def cleanup():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=8080, host="0.0.0.0", load_dotenv=True, threaded=True)
+    is_production = os.environ.get("ENV") == "PRODUCTION"
+    app.run(debug=not is_production, port=8080, host="0.0.0.0", load_dotenv=True, threaded=True)
