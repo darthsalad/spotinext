@@ -166,6 +166,11 @@ def home():
     return "Hello World!"
 
 
+@app.route("/ping", methods=["GET"])
+def ping():
+    return jsonify({"status": "ok", "jobs": len(jobs)}), 200
+
+
 @app.route("/song", methods=["GET", "OPTIONS"])
 def get_song_details():
     try:
