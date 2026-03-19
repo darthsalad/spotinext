@@ -73,7 +73,13 @@ export async function POST(_req: Request, { params }: { params: { id: string } }
 	});
 
 	if (!pythonRes.ok) {
-		const err = await pythonRes.json();
+		const text = await pythonRes.text();
+		let err: unknown;
+		try {
+			err = JSON.parse(text);
+		} catch {
+			err = { message: `Download server error: ${pythonRes.status}` };
+		}
 		return new Response(JSON.stringify(err), {
 			status: pythonRes.status,
 			headers: { "Content-Type": "application/json" },
