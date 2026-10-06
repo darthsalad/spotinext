@@ -1,126 +1,73 @@
-# SpotiNext - Spotify Music Downloader 
+# SpotiNext - Spotify Music Downloader
 
-An easy-to-use Spotify music downloader web app and PWA built with `Next.js` and `Flask` using `Spotify API` and `yt-dl`.
+See your Spotify stats and download what's playing, your top tracks or whole playlists, fully tagged with album art.
 
-## To-Do
+## How it works
 
-- [x] UI Improvements
-- [x] Spotify OAuth setup for user authentication
-- [x] Getting song details from the current playing song of the user
-- [x] Downloading the Official Audio video from YouTube
-- [x] Converting the video to mp3
-- [x] Sending the mp3 via Flask
-- [x] Download the mp3 from the response 
-- [x] Deleting the temporary files(mp3) from the server
-- [x] Logout function - server actions
-- [x] Middleware for refresh_token & access_token
-- [x] Add audio metadata
-	- [x] Album Art
- 	- [x] Song name, Artist name, Album name, Disc Number, #, Contributing Artist, Length
-- [x] Audio features - Graphs
-- [ ] Recommendations based on features of current playing songs (list of URI's)
-- [x] Top tracks(6) and artists(6) in profile page (/account)
-- [x] PWA conversion
-
-## Installation
-
-- Clone the repo and `cd` into it 
-- `cd` into the server directory and run the following commands:
- 
-```bash
-# for bash
-python -m venv ./venv
-source ./venv/bin/activate
-
-#for windows
-python -m venv ./venv
-.\venv\Scripts\Activate.ps1
 ```
-- Check if the virtual environment got activated by running `which python` or `where python` for Windows or ``pip -V`` for both which shows the current active Python environment
-- Install the dependencies by running:
-
-```bash
-pip install -r requirements.txt
-```
-- `cd` into the client directory and run the following commands for installing the client dependencies:
-
-```bash
-yarn install
-
-# or if you use npm
-npm install
-```
-- Ensure that you have `ffmpeg` installed on your system and added to the `PATH` environment variable, if not then run the following commands:
-
-```bash
-# for linux
-sudo apt install ffmpeg
-
-# for windows
-winget install Gyan.FFmpeg
+web/     Vite + React SPA (static hosting)
+         ├─ Spotify login (PKCE) and API calls straight from the browser
+         └─ asks the server for audio, saves files / builds playlist zips itself
+server/  FastAPI (stateless)
+         ├─ POST /resolve  Spotify track → best YouTube Music match (cached in SQLite)
+         └─ POST /track    download m4a/mp3 with yt-dlp, tag it, stream it back
 ```
 
-## Environment Variables
-- Modify the `.env.example` file in the root directory and rename it to `.env` after updating the environment variables from your Spotify Developer Dashboard.
-- For the `CODE_VERIFIER`, you can generate one using the following code:
+- **Fast by default:** M4A (AAC) is YouTube's original audio, so it's only remuxed, never re-encoded. MP3 is optional and slower.
+- **Tags come from Spotify:** title, artists, album artist, album, release date, track/disc number, genre, ISRC, explicit flag and 640px cover art.
+- **Playlists:** on Chromium the files are written straight into a folder you pick. Other browsers get a `.zip`.
+- **The server holds no job state.** The browser drives everything, so the server can be restarted or scaled freely.
 
-```ts
-function generateCodeVerifier(length: number) {
-	let text = "";
-	const possible =
-		"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-	for (let i = 0; i < length; i++) {
-		text += possible.charAt(Math.floor(Math.random() * possible.length));
-	}
-	return text;
-}
+## Setup
 
-generateCodeVerifier(128);
-```
+### Spotify app
 
-## Running the app
+Create an app at [developer.spotify.com/dashboard](https://developer.spotify.com/dashboard) and add the redirect URI `http://127.0.0.1:5173/`, plus your production URL when you deploy. Spotify only accepts `http://` redirect URIs on loopback IPs, so use `127.0.0.1`, not `localhost`.
 
 ### Server
-- `cd` into the server directory and run the following command:
+
+Requires Python 3.11+ and `ffmpeg` on `PATH`.
 
 ```bash
-python main.py
+cd server
+python -m venv .venv
+.venv/bin/pip install -r requirements-dev.txt   # includes deno for yt-dlp
+cp .env.example .env
+.venv/bin/uvicorn main:app --port 8080 --env-file .env --reload
 ```
 
-### Client
-- `cd` into the root directory of the repo and run the following command:
+### Web
 
 ```bash
-# For Development
-yarn dev 
-
-# or if you use npm
-npm run dev
-
-# For Production
-yarn build
-yarn start
-
-# or if you use npm
-npm run build
-npm start
+cd web
+bun install        # or npm install
+cp .env.example .env   # set VITE_SPOTIFY_CLIENT_ID
+bun run dev        # http://127.0.0.1:5173
 ```
-### Docker (Server)
-- `cd` into the root directory of the repo and run the following command:
+
+### Docker (server)
 
 ```bash
-docker build -t spotinext .
-
-docker run -p 5000:5000 spotinext
+cd server
+docker build -t spotinext-server .
+docker run -p 8080:8080 -v spotinext-data:/app/data \
+  -e ALLOWED_ORIGINS=https://your-site.example spotinext-server
 ```
 
-## Contributing
+yt-dlp is unpinned on purpose, because YouTube breaks it regularly. Rebuild the image to pick up fixes.
 
-#### Contributions are always welcome!
+## Environment variables
 
-You can contribute to add new features from the README `TO-DO` section or by fixing bugs and issues.
-
-You can request for new features by adding Issues with the `feature` tag.
+| Where | Variable | Purpose |
+|---|---|---|
+| web | `VITE_SPOTIFY_CLIENT_ID` | Spotify app client ID |
+| web | `VITE_SERVER_URL` | Download server URL (default `http://127.0.0.1:8080`) |
+| web | `VITE_SPOTIFY_REDIRECT_URI` | Optional; defaults to the page origin + `/` |
+| server | `ALLOWED_ORIGINS` | Comma-separated origins allowed by CORS |
+| server | `MAX_CONCURRENT_DOWNLOADS` | Parallel YouTube downloads (default 3) |
+| server | `REQUIRE_SPOTIFY_AUTH` | Require a valid Spotify token on `/resolve` and `/track` (default true) |
+| server | `FORCE_IPV4` | Download from YouTube over IPv4 (default true; avoids 403s from rotating IPv6 addresses) |
+| server | `DATA_DIR` | Match cache and yt-dlp cache location (default `server/data`) |
 
 ## License
 
@@ -128,4 +75,4 @@ You can request for new features by adding Issues with the `feature` tag.
 
 ## Author
 
-- [Piyush Mishra](https://github.com/DarthSalad)
+- [Piyush Mishra](https://github.com/darthsalad)

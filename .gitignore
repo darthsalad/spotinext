@@ -41,3 +41,11 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# server runtime data (match cache, yt-dlp cache)
+/server/data
+
+# web
+/web/node_modules
+/web/dist
+/web/dev-dist

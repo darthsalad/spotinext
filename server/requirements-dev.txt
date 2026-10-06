@@ -1,0 +1,3 @@
+-r requirements.txt
+# local dev only: deno binary installed into the venv (Docker copies it from the deno image)
+deno
