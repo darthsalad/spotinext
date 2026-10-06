@@ -1,0 +1,139 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+	/* light: warm paper + ink */
+	:root {
+		--background: 40 33% 95%;
+		--foreground: 240 10% 7%;
+		--ink: 240 10% 7%;
+		--shadow: 240 10% 7%;
+
+		--card: 40 40% 99%;
+		--card-foreground: 240 10% 7%;
+		--popover: 40 40% 99%;
+		--popover-foreground: 240 10% 7%;
+
+		--muted: 40 18% 89%;
+		--muted-foreground: 240 5% 34%;
+
+		--border: 240 10% 7%;
+		--input: 240 10% 7%;
+
+		--primary: 141 73% 48%;
+		--primary-foreground: 240 10% 7%;
+
+		--secondary: 40 22% 88%;
+		--secondary-foreground: 240 10% 7%;
+
+		--accent: 40 22% 88%;
+		--accent-foreground: 240 10% 7%;
+
+		--destructive: 0 84% 60%;
+		--destructive-foreground: 0 0% 100%;
+
+		--ring: 240 10% 7%;
+		--dot: 240 10% 7% / 0.07;
+
+		--radius: 0.9rem;
+	}
+
+	/* dark: soft charcoal so pure-black shadows still read */
+	.dark {
+		--background: 240 6% 9%;
+		--foreground: 40 30% 94%;
+		--ink: 240 10% 7%;
+		--shadow: 0 0% 0%;
+
+		--card: 240 5% 13%;
+		--card-foreground: 40 30% 94%;
+		--popover: 240 5% 13%;
+		--popover-foreground: 40 30% 94%;
+
+		--muted: 240 4% 19%;
+		--muted-foreground: 240 5% 66%;
+
+		--border: 240 4% 30%;
+		--input: 240 4% 30%;
+
+		--primary: 141 73% 48%;
+		--primary-foreground: 240 10% 7%;
+
+		--secondary: 240 4% 19%;
+		--secondary-foreground: 40 30% 94%;
+
+		--accent: 240 4% 19%;
+		--accent-foreground: 40 30% 94%;
+
+		--destructive: 0 72% 51%;
+		--destructive-foreground: 0 0% 100%;
+
+		--ring: 141 73% 48%;
+		--dot: 0 0% 100% / 0.05;
+	}
+}
+
+@layer base {
+	* {
+		@apply border-border;
+	}
+	html {
+		-webkit-tap-highlight-color: transparent;
+	}
+	body {
+		@apply bg-background text-foreground font-sans antialiased;
+		/* faint dot grid for texture */
+		background-image: radial-gradient(hsl(var(--dot)) 1px, transparent 1px);
+		background-size: 22px 22px;
+	}
+	h1,
+	h2,
+	h3 {
+		@apply font-display tracking-tight;
+	}
+	:focus-visible {
+		@apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+	}
+}
+
+@layer components {
+	/* the core "card" of the design: thick outline + hard shadow */
+	.panel {
+		@apply rounded-xl border-2 bg-card text-card-foreground shadow-brutal-lg;
+	}
+	/* tilted label, like a sticker slapped on the card */
+	.sticker {
+		@apply inline-flex items-center gap-1.5 rounded-full border-2 border-ink px-3 py-1 font-mono text-[11px] font-bold uppercase tracking-wider text-ink shadow-brutal-sm;
+	}
+	/* press-down interaction for anything with a hard shadow */
+	.pressable {
+		@apply transition-[transform,box-shadow] duration-150 hover:-translate-x-0.5 hover:-translate-y-0.5 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none;
+	}
+	.scrollbar-none {
+		scrollbar-width: none;
+	}
+	.scrollbar-none::-webkit-scrollbar {
+		display: none;
+	}
+}
+
+::-webkit-scrollbar {
+	width: 8px;
+	height: 8px;
+	background: transparent;
+}
+::-webkit-scrollbar-thumb {
+	background: hsl(var(--muted-foreground) / 0.4);
+	border-radius: 999px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+	}
+}
