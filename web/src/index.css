@@ -39,12 +39,13 @@
 		--radius: 0.9rem;
 	}
 
-	/* dark: soft charcoal so pure-black shadows still read */
+	/* dark: hard shadows must be lighter than the background to read at all,
+	   so they use a stone grey just under the border tone, like an extruded sticker */
 	.dark {
 		--background: 240 6% 9%;
 		--foreground: 40 30% 94%;
 		--ink: 240 10% 7%;
-		--shadow: 0 0% 0%;
+		--shadow: 240 4% 27%;
 
 		--card: 240 5% 13%;
 		--card-foreground: 40 30% 94%;

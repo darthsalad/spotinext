@@ -11,7 +11,7 @@ primary_region = "sin"
 [env]
   DATA_DIR = "/app/data"
   # the Vercel site's origin(s), comma-separated
-  ALLOWED_ORIGINS = "https://spotinext.vercel.app"
+  ALLOWED_ORIGINS = "https://spotinext.darthsalad.in,https://spotinext.vercel.app"
   MAX_CONCURRENT_DOWNLOADS = "3"
   REQUIRE_SPOTIFY_AUTH = "true"
   FORCE_IPV4 = "true"
