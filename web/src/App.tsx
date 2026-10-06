@@ -1,3 +1,4 @@
+import { Analytics } from "@vercel/analytics/react";
 import { Footer } from "@/components/footer";
 import { Navbar } from "@/components/navbar";
 import { ThemeSync } from "@/components/theme";
@@ -16,6 +17,7 @@ export function App() {
 			<main className="flex-1">{loggedIn ? <HomePage /> : <LoginPage />}</main>
 			<Footer />
 			<Toaster />
+			<Analytics />
 		</div>
 	);
 }

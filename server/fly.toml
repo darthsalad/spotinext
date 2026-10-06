@@ -1,0 +1,48 @@
+# Fly.io config for the download API. Deploy from this directory: `fly deploy`
+# App names are global on Fly; change this if it's taken.
+app = "spotinext-api"
+# Singapore: close to India, and Fly bills outbound data from India regions
+# about 3x higher than other Asia-Pacific regions (check fly.io/docs/about/pricing)
+primary_region = "sin"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  DATA_DIR = "/app/data"
+  # the Vercel site's origin(s), comma-separated
+  ALLOWED_ORIGINS = "https://spotinext.vercel.app"
+  MAX_CONCURRENT_DOWNLOADS = "3"
+  REQUIRE_SPOTIFY_AUTH = "true"
+  FORCE_IPV4 = "true"
+
+# match cache + yt-dlp player cache; create once with
+# `fly volumes create spotinext_data --region sin --size 1`
+[mounts]
+  source = "spotinext_data"
+  destination = "/app/data"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  # scale to zero when idle and wake on the next request. "suspend" resumes
+  # from a memory snapshot in well under a second; use "off" to stay always on
+  auto_stop_machines = "suspend"
+  auto_start_machines = true
+  min_machines_running = 0
+
+  [http_service.concurrency]
+    type = "requests"
+    soft_limit = 20
+    hard_limit = 40
+
+  [[http_service.checks]]
+    method = "GET"
+    path = "/ping"
+    interval = "30s"
+    timeout = "5s"
+    grace_period = "20s"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "512mb"

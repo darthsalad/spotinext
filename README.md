@@ -56,6 +56,29 @@ docker run -p 8080:8080 -v spotinext-data:/app/data \
 
 yt-dlp is unpinned on purpose, because YouTube breaks it regularly. Rebuild the image to pick up fixes.
 
+## Deploying
+
+### API on Fly.io
+
+```bash
+cd server
+fly apps create spotinext-api                 # or change `app` in fly.toml
+fly volumes create spotinext_data --region sin --size 1
+fly deploy
+fly certs add api.yourdomain.com              # then point a CNAME at spotinext-api.fly.dev
+```
+
+Set `ALLOWED_ORIGINS` in `fly.toml` to the site's origin. Redeploy (`fly deploy`) every so often to pick up the latest yt-dlp.
+
+### Site on Vercel
+
+Set the project's root directory to `web` (Vercel detects Vite), then set these environment variables:
+
+- `VITE_SPOTIFY_CLIENT_ID`
+- `VITE_SERVER_URL=https://api.yourdomain.com` (or `https://spotinext-api.fly.dev`)
+
+These are baked in at build time, so redeploy after changing them. Also add `https://<your-site>/` as a redirect URI in the Spotify dashboard.
+
 ## Environment variables
 
 | Where | Variable | Purpose |

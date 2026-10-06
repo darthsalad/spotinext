@@ -19,8 +19,8 @@ COPY . .
 RUN useradd -m appuser && chown -R appuser /app
 
 ENV DATA_DIR=/app/data
-# yt-dlp keeps its cache under $HOME; keep it on the volume too
-ENV HOME=/app/data/home
+# setpriv keeps root's environment; deno caches under $HOME
+ENV HOME=/home/appuser
 # mount a volume here to keep the match cache and yt-dlp's player cache across restarts
 VOLUME /app/data
 
