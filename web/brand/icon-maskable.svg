@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- full bleed; everything important sits inside the central safe circle (r=204) -->
+  <rect width="512" height="512" fill="#FFD43B"/>
+  <circle cx="256" cy="256" r="132" fill="#151517"/>
+  <circle cx="256" cy="256" r="108" fill="none" stroke="#2E2E34" stroke-width="4"/>
+  <circle cx="256" cy="256" r="88" fill="none" stroke="#2E2E34" stroke-width="4"/>
+  <path d="M172 188a108 108 0 0 1 70-40" fill="none" stroke="#fff" stroke-opacity=".28" stroke-width="10" stroke-linecap="round"/>
+  <circle cx="256" cy="256" r="52" fill="#1ED760" stroke="#151517" stroke-width="9"/>
+  <circle cx="256" cy="256" r="11" fill="#151517"/>
+  <circle cx="352" cy="352" r="50" fill="#FF6AB0" stroke="#151517" stroke-width="12"/>
+  <path d="M352 326v48M332 356l20 20 20-20" fill="none" stroke="#151517" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

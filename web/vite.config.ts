@@ -8,7 +8,7 @@ export default defineConfig({
 		react(),
 		VitePWA({
 			registerType: "autoUpdate",
-			includeAssets: ["icon.svg", "spotify.svg"],
+			includeAssets: ["icon.svg", "favicon-32x32.png", "apple-touch-icon.png"],
 			manifest: {
 				name: "Spotinext",
 				short_name: "Spotinext",
@@ -16,14 +16,14 @@ export default defineConfig({
 				start_url: "/",
 				display: "standalone",
 				orientation: "portrait",
-				background_color: "#0c0a09",
-				theme_color: "#0c0a09",
+				background_color: "#161618",
+				theme_color: "#161618",
 				icons: [
 					{ src: "/icon-192x192.png", sizes: "192x192", type: "image/png" },
 					{ src: "/icon-256x256.png", sizes: "256x256", type: "image/png" },
 					{ src: "/icon-384x384.png", sizes: "384x384", type: "image/png" },
 					{ src: "/icon-512x512.png", sizes: "512x512", type: "image/png" },
-					{ src: "/maskable_icon.png", sizes: "512x512", type: "image/png", purpose: "any maskable" },
+					{ src: "/maskable_icon.png", sizes: "512x512", type: "image/png", purpose: "maskable" },
 				],
 			},
 		}),
