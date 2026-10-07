@@ -1,4 +1,13 @@
+# syntax=docker/dockerfile:1
 FROM denoland/deno:bin AS deno
+
+# PO token provider (bgutil) for yt-dlp; runs on deno in the final image.
+# Keep in sync with bgutil-ytdlp-pot-provider in requirements.txt
+FROM node:22-bookworm-slim AS bgutil
+ARG BGUTIL_VERSION=2.0.1
+ADD https://github.com/Brainicism/bgutil-ytdlp-pot-provider.git#${BGUTIL_VERSION} /src
+WORKDIR /src/server
+RUN npm ci --omit=dev --no-audit --no-fund
 
 FROM python:3.13-slim
 
@@ -11,12 +20,15 @@ RUN apt-get update && \
 # yt-dlp uses deno to solve YouTube's player JS challenges
 COPY --from=deno /deno /usr/local/bin/deno
 
+COPY --from=bgutil /src/server /opt/bgutil
+RUN cd /opt/bgutil && DENO_DIR=/opt/bgutil/.cache/deno deno cache src/main.ts
+
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-RUN useradd -m appuser && chown -R appuser /app
+RUN useradd -m appuser && chown -R appuser /app /opt/bgutil
 
 ENV DATA_DIR=/app/data
 # setpriv keeps root's environment; deno caches under $HOME

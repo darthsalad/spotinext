@@ -18,6 +18,12 @@ def _opts(workdir: str, fmt: str) -> dict:
         # keep the solved player challenges between restarts (mount DATA_DIR in Docker)
         "cachedir": YTDLP_CACHE_DIR,
     }
+    if os.path.exists(settings.YT_COOKIES_FILE):
+        # yt-dlp writes the cookie jar back when it finishes; give each download
+        # its own copy so parallel downloads can't clobber the shared file
+        cookies = os.path.join(workdir, "cookies.txt")
+        shutil.copyfile(settings.YT_COOKIES_FILE, cookies)
+        opts["cookiefile"] = cookies
     if settings.FORCE_IPV4:
         # stream URLs are bound to the requesting IP; rotating IPv6 privacy
         # addresses can make the download come from a different one (403)

@@ -32,5 +32,8 @@ REQUIRE_SPOTIFY_AUTH = _env_bool("REQUIRE_SPOTIFY_AUTH", True)
 # download from YouTube over IPv4; see downloader._opts
 FORCE_IPV4 = _env_bool("FORCE_IPV4", True)
 DENO_PATH = _find_deno()
+# Netscape cookies.txt from a throwaway YouTube account; used only if it exists.
+# In Docker, entrypoint.sh writes it from the YT_COOKIES secret.
+YT_COOKIES_FILE = os.environ.get("YT_COOKIES_FILE") or os.path.join(DATA_DIR, "cookies.txt")
 
 os.makedirs(DATA_DIR, exist_ok=True)

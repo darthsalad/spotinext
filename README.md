@@ -70,6 +70,14 @@ fly certs add api.yourdomain.com              # then point a CNAME at spotinext-
 
 Set `ALLOWED_ORIGINS` in `fly.toml` to the site's origin. Redeploy (`fly deploy`) every so often to pick up the latest yt-dlp.
 
+YouTube blocks most datacenter IPs. The image therefore runs a PO token provider ([bgutil](https://github.com/Brainicism/bgutil-ytdlp-pot-provider)) on `127.0.0.1:4416` and can use cookies from a **throwaway** YouTube account:
+
+1. In a private browser window, log in to the throwaway account and open `https://www.youtube.com/robots.txt`.
+2. Export youtube.com cookies in Netscape format (e.g. the "Get cookies.txt LOCALLY" extension), then close the window without logging out.
+3. Store the file as a secret: `fly secrets set YT_COOKIES="$(base64 -w0 cookies.txt)"`, then delete the local file.
+
+The account may get flagged, and the cookies need re-exporting when downloads start failing again.
+
 ### Site on Vercel
 
 Set the project's root directory to `web` (Vercel detects Vite), then set these environment variables:

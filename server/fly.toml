@@ -4,6 +4,9 @@ app = "spotinext-api"
 # Singapore: close to India, and Fly bills outbound data from India regions
 # about 3x higher than other Asia-Pacific regions (check fly.io/docs/about/pricing)
 primary_region = "sin"
+# disk-backed swap so yt-dlp's deno challenge solver + the PO token provider
+# don't get OOM-killed on a 512 MB machine
+swap_size_mb = 1024
 
 [build]
   dockerfile = "Dockerfile"

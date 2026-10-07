@@ -51,7 +51,7 @@ export function TopStats() {
 				</div>
 			</SectionHeader>
 
-			<div className={cn("grid gap-8 transition-opacity lg:grid-cols-2", (artists.isPlaceholderData || tracks.isPlaceholderData) && "opacity-60")}>
+			<div className={cn("grid grid-cols-1 gap-8 transition-opacity lg:grid-cols-2", (artists.isPlaceholderData || tracks.isPlaceholderData) && "opacity-60")}>
 				{/* artists */}
 				<div className="panel p-5 sm:p-6">
 					<h3 className="mb-4 text-xl font-extrabold">Artists</h3>
@@ -93,7 +93,7 @@ export function TopStats() {
 				<div className="panel flex flex-col p-3 sm:p-5">
 					<h3 className="mb-2 px-2 text-xl font-extrabold">Tracks</h3>
 					{/* rows share the panel height evenly, so the list fills the box */}
-					<div className="grid flex-1 auto-rows-fr gap-0.5">
+					<div className="grid flex-1 grid-cols-1 auto-rows-fr gap-0.5">
 						{tracks.isLoading
 							? [...Array(8)].map((_, i) => (
 									<div key={i} className="flex items-center gap-3 p-2">

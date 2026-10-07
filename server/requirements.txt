@@ -6,3 +6,6 @@ ytmusicapi==1.12.3
 # yt-dlp breaks whenever YouTube changes things; keep it unpinned and rebuild often.
 # [default] pulls in yt-dlp-ejs, which solves YouTube's JS challenges (needs deno)
 yt-dlp[default]
+# yt-dlp plugin that fetches PO tokens from the bgutil provider on 127.0.0.1:4416
+# (started by entrypoint.sh); keep in sync with BGUTIL_VERSION in the Dockerfile
+bgutil-ytdlp-pot-provider==2.0.1
