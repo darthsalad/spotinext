@@ -4,6 +4,7 @@ import { popColor } from "@/components/decor";
 import { SectionHeader } from "@/components/section-header";
 import { TrackRow } from "@/components/track-row";
 import { Skeleton } from "@/components/ui/skeleton";
+import { trackEvent } from "@/lib/analytics";
 import { getTopArtists, getTopTracks, type TimeRange } from "@/lib/spotify";
 import { cn } from "@/lib/utils";
 
@@ -39,7 +40,11 @@ export function TopStats() {
 							type="button"
 							role="tab"
 							aria-selected={range === r.value}
-							onClick={() => setRange(r.value)}
+							onClick={() => {
+								if (range === r.value) return;
+								setRange(r.value);
+								trackEvent("stats_range_changed", { range: r.value });
+							}}
 							className={cn(
 								"rounded-full px-3.5 py-1.5 text-sm font-bold transition-colors",
 								range === r.value ? "bg-ink text-white dark:bg-foreground dark:text-background" : "text-muted-foreground hover:text-foreground"
@@ -65,7 +70,8 @@ export function TopStats() {
 								))
 							: artists.data?.items.slice(0, 6).map((artist, i) => (
 									<li key={artist.id}>
-										<a href={artist.external_urls.spotify} target="_blank" rel="noopener noreferrer" className="group block">
+										<a href={artist.external_urls.spotify} target="_blank" rel="noopener noreferrer" className="group block"
+											onClick={() => trackEvent("spotify_link_opened", { type: "artist", source: "top_artists" })}>
 											<div className="relative">
 												<div
 													className="aspect-square w-full rounded-lg border-2 border-ink bg-muted bg-cover bg-center shadow-brutal transition-transform group-hover:-translate-y-1 group-hover:rotate-1"
@@ -104,7 +110,7 @@ export function TopStats() {
 										</div>
 									</div>
 								))
-							: tracks.data?.items.map((track, i) => <TrackRow key={track.id} track={track} index={i} showArt size="lg" />)}
+							: tracks.data?.items.map((track, i) => <TrackRow key={track.id} track={track} index={i} source="top_tracks" showArt size="lg" />)}
 					</div>
 				</div>
 			</div>

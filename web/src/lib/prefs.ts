@@ -1,4 +1,5 @@
 import { useSyncExternalStore } from "react";
+import { trackEvent } from "@/lib/analytics";
 
 // small per-browser preferences persisted in localStorage
 
@@ -23,10 +24,12 @@ export function getPref<K extends keyof Prefs>(key: K): Prefs[K] {
 }
 
 export function setPref<K extends keyof Prefs>(key: K, value: Prefs[K]) {
+	const changed = read(key) !== value;
 	try {
 		localStorage.setItem(key, value);
 	} catch {}
 	listeners.forEach((l) => l());
+	if (changed) trackEvent("preference_changed", { preference: key, value });
 }
 
 function subscribe(listener: () => void) {

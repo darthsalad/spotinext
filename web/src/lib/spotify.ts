@@ -18,7 +18,7 @@ async function api<T>(path: string, attempt = 0): Promise<T | null> {
 	if (res.status === 204) return null;
 	if (res.status === 401 && attempt === 0) return api<T>(path, 1);
 	if (res.status === 401) {
-		logout();
+		logout("session_expired");
 		throw new AuthError("Session expired");
 	}
 	if (res.status === 429 && attempt < 3) {

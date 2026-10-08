@@ -3,6 +3,7 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { App } from "@/App";
 import { toast } from "@/components/ui/use-toast";
+import { initializeAnalytics } from "@/lib/analytics";
 import { AuthError, completeLoginFromUrl } from "@/lib/auth";
 import "@/index.css";
 
@@ -17,6 +18,7 @@ const queryClient = new QueryClient({
 
 // Exchange the ?code= from Spotify before the first render, outside React, so
 // StrictMode's double effects can't spend the one-time code twice.
+initializeAnalytics();
 completeLoginFromUrl()
 	.catch((e: Error) => {
 		queueMicrotask(() => toast({ variant: "destructive", title: "Login failed", description: e.message }));

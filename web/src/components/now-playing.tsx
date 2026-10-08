@@ -5,6 +5,7 @@ import { DownloadCta } from "@/components/download-button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAlbumColor } from "@/hooks/use-album-color";
 import { useTrackDownload } from "@/hooks/use-track-download";
+import { trackEvent } from "@/lib/analytics";
 import { resolveTrack, toTrackMeta } from "@/lib/downloader";
 import { usePref } from "@/lib/prefs";
 import { getArtist, getCurrentlyPlaying } from "@/lib/spotify";
@@ -122,7 +123,7 @@ export function NowPlaying() {
 		enabled: !!track?.artists[0]?.id,
 		staleTime: Infinity,
 	});
-	const { state, download } = useTrackDownload();
+	const { state, download } = useTrackDownload("now_playing");
 
 	if (isLoading) {
 		return (
@@ -198,6 +199,7 @@ export function NowPlaying() {
 					<h1 className="mt-4 line-clamp-2 break-words text-4xl font-extrabold leading-[0.95] sm:text-5xl">
 						<a
 							href={track.external_urls.spotify}
+							onClick={() => trackEvent("spotify_link_opened", { type: "track", source: "now_playing" })}
 							target="_blank"
 							rel="noopener noreferrer"
 							className="decoration-4 underline-offset-4 hover:underline"
@@ -208,7 +210,8 @@ export function NowPlaying() {
 					<p className="mt-3 truncate text-lg font-semibold">
 						{track.artists.map((a, i) => (
 							<span key={a.id}>
-								<a href={a.external_urls.spotify} target="_blank" rel="noopener noreferrer" className="underline-offset-4 hover:underline">
+								<a href={a.external_urls.spotify} target="_blank" rel="noopener noreferrer" className="underline-offset-4 hover:underline"
+									onClick={() => trackEvent("spotify_link_opened", { type: "artist", source: "now_playing" })}>
 									{a.name}
 								</a>
 								{i < track.artists.length - 1 && ", "}
@@ -239,6 +242,7 @@ export function NowPlaying() {
 						/>
 						<a
 							href={track.external_urls.spotify}
+							onClick={() => trackEvent("spotify_link_opened", { type: "track", source: "now_playing" })}
 							target="_blank"
 							rel="noopener noreferrer"
 							className="inline-flex h-12 items-center gap-2 rounded-full border-2 bg-card px-5 font-bold shadow-brutal-sm transition-transform hover:-translate-y-0.5"

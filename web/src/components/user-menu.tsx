@@ -9,6 +9,7 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { logout } from "@/lib/auth";
+import { trackEvent } from "@/lib/analytics";
 import { getProfile } from "@/lib/spotify";
 
 export function UserMenu() {
@@ -35,12 +36,13 @@ export function UserMenu() {
 				<DropdownMenuSeparator />
 				{profile && (
 					<DropdownMenuItem asChild>
-						<a href={profile.external_urls.spotify} target="_blank" rel="noopener noreferrer" className="gap-2">
+						<a href={profile.external_urls.spotify} target="_blank" rel="noopener noreferrer" className="gap-2"
+							onClick={() => trackEvent("spotify_link_opened", { type: "profile", source: "account" })}>
 							<ExternalLink size={14} /> Spotify profile
 						</a>
 					</DropdownMenuItem>
 				)}
-				<DropdownMenuItem onSelect={logout} className="gap-2">
+				<DropdownMenuItem onSelect={() => logout()} className="gap-2">
 					<LogOut size={14} /> Log out
 				</DropdownMenuItem>
 			</DropdownMenuContent>

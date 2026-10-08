@@ -1,5 +1,6 @@
 // Spotify Authorization Code + PKCE, entirely in the browser. PKCE needs no
 // client secret, so no backend is involved in login or token refresh.
+import { trackEvent } from "@/lib/analytics";
 
 export const CLIENT_ID = (import.meta.env.VITE_SPOTIFY_CLIENT_ID as string | undefined) ?? "";
 const REDIRECT_URI =
@@ -79,6 +80,7 @@ export async function login() {
 		code_challenge_method: "S256",
 		code_challenge: base64url(new Uint8Array(digest)),
 	});
+	trackEvent("login_started", { provider: "spotify" });
 	window.location.assign(`https://accounts.spotify.com/authorize?${params}`);
 }
 
@@ -120,17 +122,29 @@ export async function completeLoginFromUrl(): Promise<void> {
 	sessionStorage.removeItem(VERIFIER_KEY);
 	sessionStorage.removeItem(STATE_KEY);
 
-	if (error) throw new AuthError(`Spotify login failed: ${error}`);
-	if (!verifier || state !== expectedState) throw new AuthError("Login state mismatch, please try again.");
+	if (error) {
+		trackEvent("login_failed", { provider: "spotify", reason: "authorization" });
+		throw new AuthError(`Spotify login failed: ${error}`);
+	}
+	if (!verifier || state !== expectedState) {
+		trackEvent("login_failed", { provider: "spotify", reason: "state_mismatch" });
+		throw new AuthError("Login state mismatch, please try again.");
+	}
 
-	writeTokens(
-		await requestTokens({
+	let tokens: Tokens;
+	try {
+		tokens = await requestTokens({
 			grant_type: "authorization_code",
 			code: code!,
 			redirect_uri: REDIRECT_URI,
 			code_verifier: verifier,
-		})
-	);
+		});
+	} catch (e) {
+		trackEvent("login_failed", { provider: "spotify", reason: "token_exchange" });
+		throw e;
+	}
+	writeTokens(tokens);
+	trackEvent("login_completed", { provider: "spotify" });
 }
 
 let refreshing: Promise<Tokens> | null = null;
@@ -143,7 +157,7 @@ async function refresh(tokens: Tokens): Promise<Tokens> {
 			return fresh;
 		})
 		.catch((e) => {
-			writeTokens(null);
+			logout("refresh_failed");
 			throw e instanceof AuthError ? e : new AuthError(String(e));
 		})
 		.finally(() => {
@@ -159,6 +173,8 @@ export async function getAccessToken(forceRefresh = false): Promise<string> {
 	return (await refresh(tokens)).accessToken;
 }
 
-export function logout() {
+export function logout(reason: "manual" | "session_expired" | "refresh_failed" = "manual") {
+	const wasLoggedIn = isLoggedIn();
 	writeTokens(null);
+	if (wasLoggedIn) trackEvent("logout", { reason });
 }

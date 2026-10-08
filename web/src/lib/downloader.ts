@@ -1,4 +1,5 @@
 import { downloadZip } from "client-zip";
+import { trackDownload } from "@/lib/analytics";
 import { getAccessToken } from "@/lib/auth";
 import type { Track } from "@/types/spotify";
 
@@ -171,6 +172,7 @@ export async function downloadPlaylist(
 ) {
 	const progress: PlaylistProgress = { done: 0, failed: [], total: tracks.length };
 	const zipped: { name: string; input: Blob }[] = [];
+	const bufferedTracks: TrackMeta[] = [];
 	const usedNames = new Set<string>();
 	const uniqueName = (filename: string) => {
 		let candidate = filename;
@@ -186,8 +188,10 @@ export async function downloadPlaylist(
 		while (next < tracks.length) {
 			if (opts.signal?.aborted) return;
 			const track = tracks[next++];
+			const meta = toTrackMeta(track);
+			trackDownload("started", meta, opts.format, "playlist_bulk");
 			try {
-				const { blob, filename } = await fetchTrack(toTrackMeta(track), {
+				const { blob, filename } = await fetchTrack(meta, {
 					format: opts.format,
 					signal: opts.signal,
 				});
@@ -196,11 +200,17 @@ export async function downloadPlaylist(
 					const writable = await (await target.dir.getFileHandle(fileName, { create: true })).createWritable();
 					await writable.write(blob);
 					await writable.close();
+					trackDownload("completed", meta, opts.format, "playlist_bulk");
 				} else {
 					zipped.push({ name: fileName, input: blob });
+					bufferedTracks.push(meta);
 				}
 			} catch (e) {
-				if ((e as Error).name === "AbortError") return;
+				if ((e as Error).name === "AbortError" || opts.signal?.aborted) {
+					trackDownload("cancelled", meta, opts.format, "playlist_bulk");
+					return;
+				}
+				trackDownload("failed", meta, opts.format, "playlist_bulk");
 				progress.failed.push(track.name);
 			}
 			progress.done++;
@@ -209,9 +219,23 @@ export async function downloadPlaylist(
 	};
 	await Promise.all(Array.from({ length: opts.concurrency ?? 3 }, worker));
 
-	if (target.kind === "zip" && zipped.length && !opts.signal?.aborted) {
-		// stored, not deflated: audio doesn't compress, so this is just concatenation
-		saveBlob(await downloadZip(zipped).blob(), `${safeName(name)}.zip`);
+	if (target.kind === "zip" && zipped.length) {
+		let outcome: "completed" | "failed" | "cancelled" = "cancelled";
+		try {
+			if (!opts.signal?.aborted) {
+				// stored, not deflated: audio doesn't compress, so this is just concatenation
+				const zip = await downloadZip(zipped).blob();
+				if (!opts.signal?.aborted) {
+					saveBlob(zip, `${safeName(name)}.zip`);
+					outcome = "completed";
+				}
+			}
+		} catch (e) {
+			outcome = opts.signal?.aborted ? "cancelled" : "failed";
+			throw e;
+		} finally {
+			for (const meta of bufferedTracks) trackDownload(outcome, meta, opts.format, "playlist_bulk");
+		}
 	}
 	return progress;
 }

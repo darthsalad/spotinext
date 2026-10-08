@@ -5,6 +5,7 @@ import { PlaylistModal } from "@/components/playlist-modal";
 import { SectionHeader } from "@/components/section-header";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { trackEvent } from "@/lib/analytics";
 import { getPlaylists, playlistTotal } from "@/lib/spotify";
 import type { Playlist } from "@/types/spotify";
 
@@ -70,7 +71,10 @@ export function Playlists() {
 								key={playlist.id}
 								type="button"
 								className="group min-w-0 rounded-xl text-left"
-								onClick={() => setSelected(playlist)}
+								onClick={() => {
+									setSelected(playlist);
+									trackEvent("playlist_opened", { playlist_id: playlist.id, track_count: playlistTotal(playlist) });
+								}}
 							>
 								<div className="overflow-hidden rounded-xl border-2 border-ink bg-muted shadow-brutal transition-[transform,box-shadow] duration-150 group-hover:-translate-x-1 group-hover:-translate-y-1 group-hover:shadow-brutal-lg group-active:translate-x-0 group-active:translate-y-0 group-active:shadow-none">
 									{playlist.images?.[0]?.url ? (
@@ -88,7 +92,10 @@ export function Playlists() {
 			</div>
 			{!isLoading && hasMore && (
 				<div className="mt-8 flex justify-center">
-					<Button variant="outline" onClick={() => setRows((r) => r + 2)} disabled={isFetchingNextPage}>
+					<Button variant="outline" onClick={() => {
+						setRows((r) => r + 2);
+						trackEvent("playlists_show_more", { visible_count: visible.length });
+					}} disabled={isFetchingNextPage}>
 						{isFetchingNextPage && <Loader2 size={15} className="animate-spin" />}
 						Show more
 					</Button>

@@ -87,6 +87,31 @@ Set the project's root directory to `web` (Vercel detects Vite), then set these 
 
 These are baked in at build time, so redeploy after changing them. Also add `https://<your-site>/` as a redirect URI in the Spotify dashboard.
 
+### User activity in Vercel
+
+Enable **Web Analytics** for the Vercel project and deploy the site. Custom events require a Pro or Enterprise plan; see [Vercel's analytics limits](https://vercel.com/docs/analytics/limits-and-pricing). In the project's **Analytics → Events** panel, click an event to see its properties and filter the overview. Events appear after users perform the actions on the deployed site.
+
+| Events | What they measure / properties |
+|---|---|
+| `login_started`, `login_completed`, `login_failed` | Spotify authorization redirect, successful token exchange, or callback failure. `provider`; failures also include a categorical `reason`. Returning with an existing session and refreshing tokens do not count as logins. |
+| `logout` | Session cleared, once per logged-in session. `reason`: `manual`, `session_expired`, or `refresh_failed`. |
+| `track_download_started`, `track_download_completed`, `track_download_failed`, `track_download_cancelled` | Individual tracks, including each track in a bulk download. `track`: title and artists; `context`: source and format, e.g. `now_playing:m4a`, `top_tracks:mp3`, `playlist_track:m4a`, or `playlist_bulk:m4a`. |
+| `playlist_opened` | Playlist browsing. `playlist_id`, `track_count`. |
+| `playlists_show_more` | User expands the homepage playlist list. `visible_count` before expansion. |
+| `playlist_download_started` | Download all clicked. `playlist_id`, `format`. |
+| `playlist_download_completed`, `playlist_download_partial` | All tracks saved, or some tracks failed. `playlist_id`, `downloaded_tracks`. |
+| `playlist_download_failed` | Playlist loading/saving failed, every track failed, or the playlist had no downloadable tracks. `playlist_id`, categorical `reason`. |
+| `playlist_download_cancelled` | Folder picker dismissed, Cancel clicked, dialog closed, or homepage unmounted during a download. `playlist_id`, `stage`. |
+| `preference_changed` | User changes format or theme. `preference`, `value`. |
+| `stats_range_changed` | User changes the top tracks/artists time range. `range`. |
+| `spotify_link_opened` | User opens a track, artist, or profile on Spotify. `type`, `source`. |
+
+To see popular downloads, open `track_download_completed` and inspect the `track` breakdown; use `context` to compare download locations and formats. Compare started/completed/failed/cancelled events to understand outcomes. Folder completion means the file was written and closed; single-track and ZIP completion means the browser was given the file to save, since browser save-dialog outcomes aren't observable. Buffered ZIP tracks count as completed only when the ZIP is handed off, and as cancelled if the ZIP is abandoned.
+
+Events use at most two flat properties and truncate strings to Vercel's 255-character limit. They omit tokens, authorization codes/state, account identifiers, playlist names, and raw error messages. Page views remain automatic; background polling, pre-resolving tracks, and unchanged preferences do not emit custom events. Analytics provides aggregate activity, rather than identifiable user histories, and blocked analytics scripts cannot interrupt downloads or authentication.
+
+For local verification, run `cd web && bun test`. Vercel's development script also logs events in the browser console without adding them to production analytics.
+
 ## Environment variables
 
 | Where | Variable | Purpose |

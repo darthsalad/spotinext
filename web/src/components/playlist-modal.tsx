@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/components/ui/use-toast";
+import { trackEvent } from "@/lib/analytics";
 import { downloadPlaylist, pickSaveTarget, type PlaylistProgress, type SaveTarget } from "@/lib/downloader";
 import { getPref } from "@/lib/prefs";
 import { getAllPlaylistTracks, getPlaylistTracks, playlistTotal } from "@/lib/spotify";
@@ -56,12 +57,18 @@ export function PlaylistModal({ playlist, onClose }: { playlist: Playlist | null
 		abortRef.current = null;
 		setDl({ phase: "idle" });
 	}, [open]);
+	useEffect(() => () => abortRef.current?.abort(), []);
 
 	const downloadAll = async () => {
 		if (!playlist) return;
+		const format = getPref("format");
+		trackEvent("playlist_download_started", { playlist_id: playlist.id, format });
 		// first await: the folder picker needs the click's user activation
 		const target = await pickSaveTarget(playlist.name);
-		if (!target) return;
+		if (!target) {
+			trackEvent("playlist_download_cancelled", { playlist_id: playlist.id, stage: "folder_picker" });
+			return;
+		}
 
 		const controller = new AbortController();
 		abortRef.current = controller;
@@ -72,11 +79,22 @@ export function PlaylistModal({ playlist, onClose }: { playlist: Playlist | null
 			setDl({ phase: "downloading", target: target.kind, done: 0, failed: [], total: all.length });
 
 			const result = await downloadPlaylist(playlist.name, all, target, {
-				format: getPref("format"),
+				format,
 				signal: controller.signal,
 				onProgress: (p) => setDl({ phase: "downloading", target: target.kind, ...p }),
 			});
 			if (controller.signal.aborted) return;
+			const downloaded = result.done - result.failed.length;
+			if (!result.total || !downloaded) {
+				trackEvent("playlist_download_failed", {
+					playlist_id: playlist.id,
+					reason: result.total ? "no_tracks_downloaded" : "empty_playlist",
+				});
+			} else {
+				trackEvent(result.failed.length ? "playlist_download_partial" : "playlist_download_completed", {
+					playlist_id: playlist.id, downloaded_tracks: downloaded,
+				});
+			}
 			setDl({ phase: "done", ...result });
 			toast({
 				title: `Downloaded ${result.done - result.failed.length} of ${result.total} tracks`,
@@ -84,8 +102,14 @@ export function PlaylistModal({ playlist, onClose }: { playlist: Playlist | null
 				variant: result.failed.length === result.total ? "destructive" : "default",
 			});
 		} catch (e) {
-			if (!controller.signal.aborted) setDl({ phase: "error", message: (e as Error).message });
+			if (!controller.signal.aborted) {
+				trackEvent("playlist_download_failed", { playlist_id: playlist.id, reason: "download_error" });
+				setDl({ phase: "error", message: (e as Error).message });
+			}
 		} finally {
+			if (controller.signal.aborted) {
+				trackEvent("playlist_download_cancelled", { playlist_id: playlist.id, stage: "download" });
+			}
 			if (abortRef.current === controller) abortRef.current = null;
 		}
 	};
@@ -203,7 +227,7 @@ export function PlaylistModal({ playlist, onClose }: { playlist: Playlist | null
 					) : (
 						<div className="space-y-0.5">
 							{tracks.map((track, i) => (
-								<TrackRow key={`${track.id}-${i}`} track={track} index={i} showArt />
+								<TrackRow key={`${track.id}-${i}`} track={track} index={i} source="playlist_track" showArt />
 							))}
 							<div ref={sentinelRef} className="py-2">
 								{isFetchingNextPage && (

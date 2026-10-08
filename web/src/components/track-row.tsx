@@ -1,5 +1,6 @@
 import { DownloadButton } from "@/components/download-button";
 import { useTrackDownload } from "@/hooks/use-track-download";
+import { trackEvent, type DownloadSource } from "@/lib/analytics";
 import { toTrackMeta } from "@/lib/downloader";
 import { cn } from "@/lib/utils";
 import type { Track } from "@/types/spotify";
@@ -21,13 +22,14 @@ const formatDuration = (ms: number) => {
 	return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
 };
 
-export function TrackRow({ track, index, showArt = false, size = "md" }: {
+export function TrackRow({ track, index, showArt = false, size = "md", source }: {
 	track: Track;
 	index: number;
 	showArt?: boolean;
 	size?: "md" | "lg";
+	source: Extract<DownloadSource, "top_tracks" | "playlist_track">;
 }) {
-	const { state, download } = useTrackDownload();
+	const { state, download } = useTrackDownload(source);
 	const pinned = state.phase !== "idle";
 
 	return (
@@ -51,6 +53,7 @@ export function TrackRow({ track, index, showArt = false, size = "md" }: {
 					href={track.external_urls.spotify}
 					target="_blank"
 					rel="noopener noreferrer"
+					onClick={() => trackEvent("spotify_link_opened", { type: "track", source })}
 					className={cn("block truncate font-semibold underline-offset-2 hover:underline", size === "lg" && "sm:text-[17px] lg:text-lg")}
 				>
 					{track.name}
